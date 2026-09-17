@@ -1,0 +1,32 @@
+[project]
+name = "brazilian-open-data-agent"
+version = "0.1.0"
+description = "Brazilian Open Data Agent"
+requires-python = ">=3.11"
+dependencies = [
+    "pydantic>=2",
+    "pandas>=2",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8",
+    "pyright>=1.1",
+]
+
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pyright]
+include = ["src"]
+typeCheckingMode = "standard"
+pythonVersion = "3.11"
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
