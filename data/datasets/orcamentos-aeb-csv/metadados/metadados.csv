@@ -1,0 +1,9 @@
+id_orcamento;Identificador do registro de orçamento
+data_ano;data que se refere ao ano do orçamento
+nome_unidade;Nome da unidade do orçamento
+nome_programa;Nome do programa que se destinou o orçamento
+nome_acao;Ação a que se destina o orçamento
+dotacao_atual;Dotação em disposição para o órgão
+empenhado;Valor disponível para a realização da ação
+liquidado;Valor líquido disponível para a ação
+pago;Valor homologado para a ação
