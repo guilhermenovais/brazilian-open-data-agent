@@ -11,3 +11,4 @@ build/
 *.log
 .env*
 data/logs/
+data/testset_runs/

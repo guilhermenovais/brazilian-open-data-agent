@@ -8,3 +8,5 @@ class AgentSettings(BaseSettings):
 
     model_name: str
     instrument: bool = True
+    base_url: str | None = None
+    api_key: str | None = None

@@ -1,0 +1,15 @@
+[
+  {
+    "n": 1,
+    "type": "single-lookup",
+    "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+    "expected": "8351",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 2,
+    "type": "single-lookup",
+    "question": "Quanto foi empenhado para o auxílio-transporte dos servidores da Agência Espacial Brasileira em 2000?",
+    "source": "dados_gerais/tb_geral.csv"
+  }
+]

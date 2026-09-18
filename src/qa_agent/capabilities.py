@@ -8,6 +8,8 @@ with a Portuguese answer and outcome="none" (research.md §10).
 from datetime import datetime, timezone
 from typing import Literal, MutableSequence
 
+from pydantic import BaseModel
+from pydantic_ai.messages import ModelMessage, ToolCallPart, ToolReturnPart
 from pydantic_ai.models import Model
 
 from dataset_selector.capabilities import select_dataset
@@ -22,7 +24,12 @@ from dataset_selector.usage_log import SelectionLogger
 
 from qa_agent.agent_factory import build_agent
 from qa_agent.deps import AgentDeps
-from qa_agent.models import AgentAnswer, AgentRunLogEntry, QuestionAnsweringResult
+from qa_agent.models import (
+    AgentAnswer,
+    AgentRunLogEntry,
+    QuestionAnsweringResult,
+    RetrievalStep,
+)
 from qa_agent.prompt_loader import render
 from qa_agent.run_log import RunLogger
 from qa_agent.settings import AgentSettings
@@ -50,6 +57,7 @@ def answer_question(
             answer=_NO_DATASET_ANSWER,
             outcome="none",
             run_logger=run_logger,
+            errored=True,
         )
 
     return _answer_with_selection(question, selection, run_logger=run_logger, settings=settings)
@@ -96,10 +104,12 @@ def _answer_with_selection(
             answer=_PROCESSING_FAILED_ANSWER,
             outcome="none",
             run_logger=run_logger,
+            errored=True,
         )
 
     agent_answer: AgentAnswer = run_result.output
     outcome = _clamp_outcome(reported=agent_answer.outcome, budget=step_budget)
+    steps = _extract_steps(run_result.all_messages())
 
     return _finalize(
         question=question,
@@ -107,7 +117,35 @@ def _answer_with_selection(
         answer=agent_answer.answer,
         outcome=outcome,
         run_logger=run_logger,
+        steps=steps,
     )
+
+
+def _extract_steps(messages: list[ModelMessage]) -> list[RetrievalStep]:
+    steps: list[RetrievalStep] = []
+    calls_by_id: dict[str, ToolCallPart] = {}
+    for message in messages:
+        for part in message.parts:
+            if isinstance(part, ToolCallPart):
+                calls_by_id[part.tool_call_id] = part
+            elif isinstance(part, ToolReturnPart):
+                call = calls_by_id.get(part.tool_call_id)
+                if call is None:
+                    continue
+                arguments = call.args_as_dict() if isinstance(call.args, str) else dict(call.args or {})
+                content = part.content
+                if isinstance(content, BaseModel):
+                    result_summary = content.model_dump_json()
+                else:
+                    result_summary = str(content)
+                steps.append(
+                    RetrievalStep(
+                        tool_name=call.tool_name,
+                        arguments=arguments,
+                        result_summary=result_summary,
+                    )
+                )
+    return steps
 
 
 def _clamp_outcome(
@@ -125,6 +163,8 @@ def _finalize(
     answer: str,
     outcome: Literal["full", "partial", "none"],
     run_logger: RunLogger,
+    steps: list[RetrievalStep] | None = None,
+    errored: bool = False,
 ) -> QuestionAnsweringResult:
     run_logger.log(
         AgentRunLogEntry(
@@ -134,4 +174,10 @@ def _finalize(
             timestamp=datetime.now(timezone.utc),
         )
     )
-    return QuestionAnsweringResult(answer=answer, dataset_key=dataset_key, outcome=outcome)
+    return QuestionAnsweringResult(
+        answer=answer,
+        dataset_key=dataset_key,
+        outcome=outcome,
+        steps=steps or [],
+        errored=errored,
+    )

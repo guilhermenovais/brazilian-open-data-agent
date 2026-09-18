@@ -1,0 +1,37 @@
+[
+  {
+    "n": 1,
+    "type": "single-lookup",
+    "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+    "expected": "8351",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 2,
+    "type": "calculation",
+    "question": "Qual foi o total aproximado pago pela AEB no período?",
+    "expected": "~3675300.51",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 3,
+    "type": "multiple-files",
+    "question": "Qual unidade, programa e valor referem-se à ação de apoio administrativo?",
+    "expected": "Agência Espacial Brasileira / Apoio Administrativo / 238959",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 4,
+    "type": "single-lookup",
+    "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+    "expected": "65000",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 5,
+    "type": "edge-cases",
+    "question": "Quanto foi gasto com merenda escolar pela AEB em 2005?",
+    "expected": "Data not available (no such action/category in the dataset)",
+    "source": "dados_gerais/tb_geral.csv"
+  }
+]

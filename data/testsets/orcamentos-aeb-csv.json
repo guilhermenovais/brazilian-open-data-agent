@@ -1,0 +1,353 @@
+[
+  {
+    "n": 1,
+    "type": "single-lookup",
+    "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+    "expected": "8351",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 2,
+    "type": "single-lookup",
+    "question": "Quanto foi empenhado para o auxílio-transporte dos servidores da Agência Espacial Brasileira em 2000?",
+    "expected": "25461",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 3,
+    "type": "single-lookup",
+    "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+    "expected": "65000",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 4,
+    "type": "single-lookup",
+    "question": "Qual foi o valor liquidado para o desenvolvimento de foguetes de sondagem em 2001?",
+    "expected": "1462958",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 5,
+    "type": "single-lookup",
+    "question": "Quanto foi pago em pensões para servidores civis em 2001?",
+    "expected": "14938",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 6,
+    "type": "single-lookup",
+    "question": "Quanto foi gasto com pagamento de aposentadorias e pensões de servidores civis em 2002?",
+    "expected": "15014",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 7,
+    "type": "single-lookup",
+    "question": "Quanto a Agência Espacial Brasileira gastou com informática em 2002?",
+    "expected": "39290",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 8,
+    "type": "single-lookup",
+    "question": "Quanto foi empenhado com comunicação de governo em 2002?",
+    "expected": "50000",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 9,
+    "type": "single-lookup",
+    "question": "Qual foi o orçamento previsto para o desenvolvimento de veículos lançadores de satélites em 2003?",
+    "expected": "10672818",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 10,
+    "type": "single-lookup",
+    "question": "Quanto foi pago com a formação de astronautas em 2003?",
+    "expected": "745857",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 11,
+    "type": "single-lookup",
+    "question": "Quanto foi pago para obras de complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+    "expected": "11779411",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 12,
+    "type": "single-lookup",
+    "question": "Quanto foi empenhado com a participação brasileira na Estação Espacial Internacional em 2005?",
+    "expected": "5626000",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 13,
+    "type": "single-lookup",
+    "question": "Qual foi o valor liquidado com aposentadorias e pensões de servidores civis em 2006?",
+    "expected": "65869",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 14,
+    "type": "single-lookup",
+    "question": "Quanto foi pago pelo desenvolvimento de satélites de sensoriamento remoto com imageador óptico em 2006?",
+    "expected": "9093355",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 15,
+    "type": "single-lookup",
+    "question": "Quanto foi pago pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+    "expected": "40010834",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 16,
+    "type": "single-lookup",
+    "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2009?",
+    "expected": "28931584",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 17,
+    "type": "single-lookup",
+    "question": "Qual foi a dotação para o auxílio-alimentação dos servidores em 2007?",
+    "expected": "104970",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 18,
+    "type": "single-lookup",
+    "question": "Qual foi o valor liquidado no desenvolvimento do satélite Lattes em 2009?",
+    "expected": "2272748",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 19,
+    "type": "single-lookup",
+    "question": "Quanto foi empenhado em pesquisa de ciência espacial em 2008?",
+    "expected": "2099647",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 20,
+    "type": "single-lookup",
+    "question": "Quanto foi pago com a capacitação de especialistas do setor espacial em 2009?",
+    "expected": "40390",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 21,
+    "type": "calculation",
+    "question": "Qual foi o orçamento total (dotação) do ano de 2002?",
+    "expected": "23992773",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 22,
+    "type": "calculation",
+    "question": "Quanto foi pago no total durante o ano de 2002?",
+    "expected": "18245931",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 23,
+    "type": "calculation",
+    "question": "Quanto foi empenhado ao todo em 2005?",
+    "expected": "205868524",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 24,
+    "type": "calculation",
+    "question": "Qual foi o valor total liquidado em 2007?",
+    "expected": "100441734",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 25,
+    "type": "calculation",
+    "question": "Qual foi o orçamento total (dotação) do ano de 2010?",
+    "expected": "287184731",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 26,
+    "type": "calculation",
+    "question": "Quanto foi pago no total durante o ano de 2015?",
+    "expected": "58078604",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 27,
+    "type": "calculation",
+    "question": "Quanto foi pago no total durante o ano de 2019?",
+    "expected": "100585421",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 28,
+    "type": "calculation",
+    "question": "Quantas ações orçamentárias tiveram execução em 2006?",
+    "expected": "31",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 29,
+    "type": "calculation",
+    "question": "Quantas ações orçamentárias diferentes tiveram gastos em 2008?",
+    "expected": "31",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 30,
+    "type": "calculation",
+    "question": "Qual foi o valor médio pago por ação orçamentária em 2012?",
+    "expected": "~3675300.51",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 31,
+    "type": "calculation",
+    "question": "Qual foi o valor médio empenhado por ação orçamentária em 2009?",
+    "expected": "~9898319.48",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 32,
+    "type": "calculation",
+    "question": "Qual foi a ação que recebeu o maior valor pago em 2005, e quanto foi pago?",
+    "expected": "Participação Brasileira no Desenvolvimento do Satélite Sino-Brasileiro - Projeto CBERS (46219753)",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 33,
+    "type": "calculation",
+    "question": "Qual ação teve a maior dotação orçamentária em 2008, e qual foi o valor?",
+    "expected": "Desenvolvimento do Satélite Sino-Brasileiro - Projeto CBERS-3 (47280786)",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 34,
+    "type": "calculation",
+    "question": "Qual foi a ação com o maior valor pago em 2014, e quanto foi pago?",
+    "expected": "Desenvolvimento e Lançamento de Satélites (44332792)",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 35,
+    "type": "calculation",
+    "question": "Quanto foi gasto (pago) com a previdência de inativos e pensionistas da União entre 2010 e 2015?",
+    "expected": "1148602",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 36,
+    "type": "calculation",
+    "question": "Quanto a Agência Espacial Brasileira pagou ao todo, somando todos os anos disponíveis?",
+    "expected": "1037017199",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 37,
+    "type": "calculation",
+    "question": "Em quantos anos diferentes o programa espacial (Pnae) teve execução orçamentária registrada?",
+    "expected": "12",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 38,
+    "type": "multiple-files",
+    "question": "A que programa pertence a ação de desenvolvimento de veículos lançadores de satélites em 2000?",
+    "expected": "Nacional de Atividades Espaciais - Pnae",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv"
+  },
+  {
+    "n": 39,
+    "type": "multiple-files",
+    "question": "A que programa pertence a manutenção de serviços de transportes da Agência Espacial Brasileira em 2002?",
+    "expected": "Apoio Administrativo",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv"
+  },
+  {
+    "n": 40,
+    "type": "multiple-files",
+    "question": "A que programa está vinculado o desenvolvimento e lançamento de foguetes de sondagem em 2004?",
+    "expected": "Nacional de Atividades Espaciais - Pnae",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv"
+  },
+  {
+    "n": 41,
+    "type": "multiple-files",
+    "question": "A que programa pertence a assistência pré-escolar aos dependentes dos servidores em 2011?",
+    "expected": "Nacional de Atividades Espaciais - Pnae",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv"
+  },
+  {
+    "n": 42,
+    "type": "multiple-files",
+    "question": "Qual unidade executou a ação de regulamentações, licenças e certificações espaciais em 2000?",
+    "expected": "Agência Espacial Brasileira",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv"
+  },
+  {
+    "n": 43,
+    "type": "multiple-files",
+    "question": "Qual unidade foi responsável pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+    "expected": "Agência Espacial Brasileira",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv"
+  },
+  {
+    "n": 44,
+    "type": "multiple-files",
+    "question": "Qual unidade executou o desenvolvimento do satélite Amazônia-1 em 2010?",
+    "expected": "Agência Espacial Brasileira",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv"
+  },
+  {
+    "n": 45,
+    "type": "multiple-files",
+    "question": "Qual foi a unidade responsável, o programa e o valor pago pelas ações de informática em 2000?",
+    "expected": "Agência Espacial Brasileira / Apoio Administrativo / 238959",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv + tb_programas.csv + tb_acoes.csv"
+  },
+  {
+    "n": 46,
+    "type": "multiple-files",
+    "question": "Qual unidade, programa e valor pago estão associados à complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+    "expected": "Agência Espacial Brasileira / Nacional de Atividades Espaciais - Pnae / 11779411",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv + tb_programas.csv + tb_acoes.csv"
+  },
+  {
+    "n": 47,
+    "type": "multiple-files",
+    "question": "O que significa 'empenhado' na execução de um orçamento público?",
+    "expected": "Valor disponível para a realização da ação",
+    "source": "metadados/metadados.csv"
+  },
+  {
+    "n": 48,
+    "type": "edge-cases",
+    "question": "Quanto a Agência Espacial Brasileira gastou com merenda escolar em 2005?",
+    "expected": "Data not available (no such action/category in the dataset)",
+    "source": "n/a"
+  },
+  {
+    "n": 49,
+    "type": "edge-cases",
+    "question": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
+    "expected": "Ambiguous — expected a clarifying question (dotação atual/empenhado/liquidado/pago), not a guess",
+    "source": "n/a"
+  },
+  {
+    "n": 50,
+    "type": "edge-cases",
+    "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2020?",
+    "expected": "Data not available (no such year/record in the dataset)",
+    "source": "n/a"
+  }
+]
+

@@ -1,0 +1,72 @@
+[
+  {
+    "n": 1,
+    "type": "single-lookup",
+    "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+    "expected": "8351",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 2,
+    "type": "single-lookup",
+    "question": "Quanto a Agência Espacial Brasileira gastou com informática em 2002?",
+    "expected": "39290",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 3,
+    "type": "single-lookup",
+    "question": "Quanto foi pago pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+    "expected": "40010834",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 4,
+    "type": "single-lookup",
+    "question": "Qual foi o valor liquidado no desenvolvimento do satélite Lattes em 2009?",
+    "expected": "2272748",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 5,
+    "type": "calculation",
+    "question": "Quanto foi pago no total durante o ano de 2002?",
+    "expected": "18245931",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 6,
+    "type": "calculation",
+    "question": "Qual foi o valor médio pago por ação orçamentária em 2012?",
+    "expected": "~3675300.51",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 7,
+    "type": "calculation",
+    "question": "Quanto a Agência Espacial Brasileira pagou ao todo, somando todos os anos disponíveis?",
+    "expected": "1037017199",
+    "source": "dados_gerais/tb_geral.csv"
+  },
+  {
+    "n": 8,
+    "type": "multiple-files",
+    "question": "A que programa está vinculado o desenvolvimento e lançamento de foguetes de sondagem em 2004?",
+    "expected": "Nacional de Atividades Espaciais - Pnae",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv"
+  },
+  {
+    "n": 9,
+    "type": "multiple-files",
+    "question": "Qual unidade, programa e valor pago estão associados à complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+    "expected": "Agência Espacial Brasileira / Nacional de Atividades Espaciais - Pnae / 11779411",
+    "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv + tb_programas.csv + tb_acoes.csv"
+  },
+  {
+    "n": 10,
+    "type": "edge-cases",
+    "question": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
+    "expected": "Ambiguous — expected a clarifying question (dotação atual/empenhado/liquidado/pago), not a guess",
+    "source": "n/a"
+  }
+]
