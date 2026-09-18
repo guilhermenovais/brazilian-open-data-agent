@@ -8,7 +8,7 @@ from data_access.capabilities import SAMPLE_SIZE_CAP, inspect_schema
 from data_access.dataset import Dataset
 from data_access.exceptions import DataSourceNotFoundError, UnreadableSourceError
 
-FIXTURES = Path(__file__).parent.parent / "fixtures" / "sample_dataset"
+FIXTURES = Path(__file__).parent.parent.parent / "fixtures" / "data_access" / "sample_dataset"
 
 
 def test_us2_1_large_csv_capped_sample_all_field_names(tmp_path: Path) -> None:

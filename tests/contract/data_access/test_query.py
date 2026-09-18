@@ -14,7 +14,7 @@ from data_access.exceptions import (
 )
 from data_access.models import ContainsCondition, EqualsCondition, RangeCondition
 
-FIXTURES = Path(__file__).parent.parent / "fixtures" / "sample_dataset"
+FIXTURES = Path(__file__).parent.parent.parent / "fixtures" / "data_access" / "sample_dataset"
 
 
 def test_us3_1_equals_condition_only_exact_matches() -> None:

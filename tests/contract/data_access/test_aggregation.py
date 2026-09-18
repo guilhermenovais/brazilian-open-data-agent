@@ -14,7 +14,7 @@ from data_access.exceptions import (
 )
 from data_access.models import AggregateSpec, AggregationRequest
 
-FIXTURES = Path(__file__).parent.parent / "fixtures" / "sample_dataset"
+FIXTURES = Path(__file__).parent.parent.parent / "fixtures" / "data_access" / "sample_dataset"
 
 
 def test_us4_1_group_by_categorical_count_matches_true_row_count() -> None:

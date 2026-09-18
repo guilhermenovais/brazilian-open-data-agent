@@ -9,7 +9,7 @@ from data_access.capabilities import discover_data_sources
 from data_access.dataset import Dataset
 from data_access.exceptions import IdentifierCollisionError
 
-FIXTURES = Path(__file__).parent.parent / "fixtures" / "sample_dataset"
+FIXTURES = Path(__file__).parent.parent.parent / "fixtures" / "data_access" / "sample_dataset"
 
 
 def test_us1_1_all_csv_json_sources_listed_with_identifier_and_format() -> None:
