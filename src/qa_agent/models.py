@@ -13,12 +13,22 @@ class AgentAnswer(BaseModel):
     outcome: Literal["full", "partial", "none"]
 
 
+class RetrievalStep(BaseModel):
+    """One tool call/return pair pulled from a run's `all_messages()` (data-model.md)."""
+
+    tool_name: str
+    arguments: dict
+    result_summary: str
+
+
 class QuestionAnsweringResult(BaseModel):
     """`answer_question`'s public return type."""
 
     answer: str
     dataset_key: str
     outcome: Literal["full", "partial", "none"]
+    steps: list[RetrievalStep] = []
+    errored: bool = False
 
 
 class AgentRunLogEntry(BaseModel):

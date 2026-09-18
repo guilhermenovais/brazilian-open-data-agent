@@ -9,6 +9,8 @@ for every question.
 """
 
 from pydantic_ai import Agent
+from pydantic_ai.models.openai import OpenAIChatModel
+from pydantic_ai.providers.openai import OpenAIProvider
 
 from qa_agent import tools
 from qa_agent.deps import AgentDeps
@@ -17,8 +19,14 @@ from qa_agent.settings import AgentSettings
 
 
 def build_agent(settings: AgentSettings) -> Agent[AgentDeps, AgentAnswer]:
+    model: str | OpenAIChatModel = settings.model_name
+    if settings.base_url is not None:
+        model = OpenAIChatModel(
+            settings.model_name,
+            provider=OpenAIProvider(base_url=settings.base_url, api_key=settings.api_key),
+        )
     agent: Agent[AgentDeps, AgentAnswer] = Agent(
-        model=settings.model_name,
+        model=model,
         deps_type=AgentDeps,
         output_type=AgentAnswer,
     )
