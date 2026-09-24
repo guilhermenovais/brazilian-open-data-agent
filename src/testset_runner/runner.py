@@ -3,6 +3,7 @@
 from datetime import datetime, timezone
 from pathlib import Path
 
+from qa_agent.answerer import QuestionAnswerer
 from testset_runner.loader import TestsetLoader
 from testset_runner.matcher import DeterministicMatcher, MatchStrategy, NumericMatchStrategy
 from testset_runner.models import (
@@ -11,7 +12,6 @@ from testset_runner.models import (
     TargetConfiguration,
     TestRun,
 )
-from testset_runner.question_answerer import QuestionAnswerer
 from testset_runner.store import RunStore
 
 _RUN_ID_FORMAT = "%Y%m%dT%H%M%S%fZ"

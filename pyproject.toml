@@ -32,3 +32,7 @@ venv = ".venv"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+# `web_ui`/`testset_runner` each have their own `test_cli.py`; with no `__init__.py` in
+# either test directory, pytest's default "prepend" import mode collides on that shared
+# basename. `importlib` mode imports each test file by its own module identity instead.
+addopts = "--import-mode=importlib"

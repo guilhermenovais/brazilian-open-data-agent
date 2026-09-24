@@ -9,10 +9,10 @@ import argparse
 import os
 import sys
 
+from qa_agent.answerer import QaAgentQuestionAnswerer
 from testset_runner.comparator import compare_runs
 from testset_runner.exceptions import IncompatibleRunsError, RunLoadError, TestsetLoadError
 from testset_runner.models import TargetConfiguration
-from testset_runner.question_answerer import QaAgentQuestionAnswerer
 from testset_runner.runner import run_testset
 from testset_runner.store import JsonFileRunStore
 
@@ -26,7 +26,7 @@ def _run(args: argparse.Namespace) -> int:
     api_key = args.api_key or os.environ.get("QA_AGENT_API_KEY")
 
     target = TargetConfiguration(model_name=model, base_url=base_url)
-    answerer = QaAgentQuestionAnswerer(target, api_key=api_key)
+    answerer = QaAgentQuestionAnswerer(target.model_name, target.base_url, api_key=api_key)
     store = JsonFileRunStore(args.out_dir)
 
     try:
