@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from qa_agent.models import RetrievalStep
+from qa_agent.models import FailureDetail, RetrievalStep
 
 MatchStatus = Literal["matched", "not_matched", "needs_review", "errored"]
 Transition = Literal[
@@ -38,6 +38,27 @@ class TargetConfiguration(BaseModel):
     base_url: str | None = None
 
 
+class RetryPolicy(BaseModel):
+    """The retry rules for one run, persisted on `TestRun` (006 data-model.md).
+
+    An attempt is one `QuestionAnswerer.answer()` call: a full, fresh answer to the
+    question. The provider SDK (e.g. openai, `DEFAULT_MAX_RETRIES = 2`) may retry
+    individual HTTP requests inside one attempt, so `attempts=1` does not mean exactly
+    one HTTP request (006 research.md §2).
+
+    The wait before retry `k` (k = 1, 2, ...) is
+    `min(max(initial_wait_seconds * backoff_multiplier ** (k - 1), retry_after or 0), max_wait_seconds)`,
+    where `retry_after` is the failed attempt's provider-suggested wait, if any.
+    """
+
+    max_attempts: int = Field(default=3, ge=1)
+    """Total attempts per question, including the first. `1` disables retries."""
+    initial_wait_seconds: float = Field(default=2.0, ge=0)
+    backoff_multiplier: float = Field(default=2.0, ge=1)
+    max_wait_seconds: float = Field(default=60.0, ge=0)
+    """Upper bound on any single wait, including one suggested by the provider."""
+
+
 class QuestionResult(BaseModel):
     """The outcome of asking one `Question` within one `TestRun`."""
 
@@ -50,6 +71,13 @@ class QuestionResult(BaseModel):
     dataset_key: str
     steps: list[RetrievalStep]
     match_status: MatchStatus
+    attempts: int | None = None
+    """`1 ≤ attempts ≤ retry_policy.max_attempts`. `None` means not recorded (pre-006 run)."""
+    failed_attempts: list[FailureDetail] = []
+    """Every failed attempt's `FailureDetail`, in order. Length is `attempts - 1` when the
+    question succeeded, and `attempts` when it ended errored."""
+    failure: FailureDetail | None = None
+    """The final failure when `match_status == "errored"`; `None` for every other question."""
 
 
 class RunSummary(BaseModel):
@@ -60,6 +88,14 @@ class RunSummary(BaseModel):
     by_status: dict[str, int]
     by_category: dict[str, "RunSummary"]
     target_unreachable: bool
+    errored_by_failure_type: dict[str, int] | None = None
+    """For errored questions, a count per `failure.type`. Errored results with no recorded
+    failure are counted under `"unknown"`. `None` means not recorded (pre-006 run)."""
+    retried_questions: int | None = None
+    """Count of results with `attempts > 1`. `None` means not recorded."""
+    errored_after_retries: int | None = None
+    """Count of errored results whose final failure was transient and whose attempts ran
+    out (`attempts == max_attempts`). `None` means not recorded."""
 
 
 class TestRun(BaseModel):
@@ -71,6 +107,8 @@ class TestRun(BaseModel):
     target: TargetConfiguration
     results: list[QuestionResult]
     summary: RunSummary
+    retry_policy: RetryPolicy | None = None
+    """The retry policy the run used. `None` means a pre-006 run (not recorded)."""
 
 
 class ComparisonEntry(BaseModel):
@@ -90,3 +128,7 @@ class RunComparison(BaseModel):
     run_b: TargetConfiguration
     entries: list[ComparisonEntry]
     summary: dict[str, int]
+    retry_policy_a: RetryPolicy | None = None
+    """Run A's retry policy, or `None` if not recorded. Information only: a policy
+    difference never affects transitions."""
+    retry_policy_b: RetryPolicy | None = None

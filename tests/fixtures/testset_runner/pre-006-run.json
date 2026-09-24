@@ -1,0 +1,155 @@
+{
+  "run_id": "20260901T120000000000Z",
+  "created_at": "2026-09-01T12:00:00Z",
+  "testset": {
+    "path": "tests/fixtures/testset_runner/mini-testset.json",
+    "content_hash": "0a4e4536a800512534adc7dc5c9bbcc94996080e033bc131485cd38484381367",
+    "questions": [
+      {
+        "n": 1,
+        "type": "single-lookup",
+        "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+        "expected": "8351",
+        "source": "dados_gerais/tb_geral.csv"
+      },
+      {
+        "n": 2,
+        "type": "calculation",
+        "question": "Qual foi o total aproximado pago pela AEB no período?",
+        "expected": "~3675300.51",
+        "source": "dados_gerais/tb_geral.csv"
+      },
+      {
+        "n": 3,
+        "type": "multiple-files",
+        "question": "Qual unidade, programa e valor referem-se à ação de apoio administrativo?",
+        "expected": "Agência Espacial Brasileira / Apoio Administrativo / 238959",
+        "source": "dados_gerais/tb_geral.csv"
+      },
+      {
+        "n": 4,
+        "type": "single-lookup",
+        "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+        "expected": "65000",
+        "source": "dados_gerais/tb_geral.csv"
+      },
+      {
+        "n": 5,
+        "type": "edge-cases",
+        "question": "Quanto foi gasto com merenda escolar pela AEB em 2005?",
+        "expected": "Data not available (no such action/category in the dataset)",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  "target": {
+    "model_name": "pre-006-model",
+    "base_url": null
+  },
+  "results": [
+    {
+      "n": 1,
+      "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+      "expected": "8351",
+      "category": "single-lookup",
+      "actual_answer": "A resposta é 8351.",
+      "agent_outcome": "full",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "matched"
+    },
+    {
+      "n": 2,
+      "question": "Qual foi o total aproximado pago pela AEB no período?",
+      "expected": "~3675300.51",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored"
+    },
+    {
+      "n": 3,
+      "question": "Qual unidade, programa e valor referem-se à ação de apoio administrativo?",
+      "expected": "Agência Espacial Brasileira / Apoio Administrativo / 238959",
+      "category": "multiple-files",
+      "actual_answer": "A resposta é Agência Espacial Brasileira / Apoio Administrativo / 238959.",
+      "agent_outcome": "full",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "needs_review"
+    },
+    {
+      "n": 4,
+      "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+      "expected": "65000",
+      "category": "single-lookup",
+      "actual_answer": "A resposta é 65000.",
+      "agent_outcome": "full",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "matched"
+    },
+    {
+      "n": 5,
+      "question": "Quanto foi gasto com merenda escolar pela AEB em 2005?",
+      "expected": "Data not available (no such action/category in the dataset)",
+      "category": "edge-cases",
+      "actual_answer": "A resposta é Data not available (no such action/category in the dataset).",
+      "agent_outcome": "full",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "not_matched"
+    }
+  ],
+  "summary": {
+    "total_questions": 5,
+    "match_rate": 0.4,
+    "by_status": {
+      "matched": 2,
+      "errored": 1,
+      "needs_review": 1,
+      "not_matched": 1
+    },
+    "by_category": {
+      "calculation": {
+        "total_questions": 1,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 1
+        },
+        "by_category": {},
+        "target_unreachable": false
+      },
+      "edge-cases": {
+        "total_questions": 1,
+        "match_rate": 0.0,
+        "by_status": {
+          "not_matched": 1
+        },
+        "by_category": {},
+        "target_unreachable": false
+      },
+      "multiple-files": {
+        "total_questions": 1,
+        "match_rate": 0.0,
+        "by_status": {
+          "needs_review": 1
+        },
+        "by_category": {},
+        "target_unreachable": false
+      },
+      "single-lookup": {
+        "total_questions": 2,
+        "match_rate": 1.0,
+        "by_status": {
+          "matched": 2
+        },
+        "by_category": {},
+        "target_unreachable": false
+      }
+    },
+    "target_unreachable": false
+  }
+}

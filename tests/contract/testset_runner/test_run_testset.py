@@ -5,13 +5,14 @@ and User Story 3 (differing target configuration), per contracts/running.md.
 import json
 from pathlib import Path
 
-from qa_agent.models import QuestionAnsweringResult
+from qa_agent.models import FailureDetail, QuestionAnsweringResult
 from testset_runner.models import TargetConfiguration
 from testset_runner.runner import run_testset
 from testset_runner.store import JsonFileRunStore
 
 REPO_ROOT = Path(__file__).parent.parent.parent.parent
 BUNDLED_TESTSET = REPO_ROOT / "data" / "testsets" / "orcamentos-aeb-csv.json"
+MINI_TESTSET = REPO_ROOT / "tests" / "fixtures" / "testset_runner" / "mini-testset.json"
 DATASET_KEY = "orcamentos-aeb-csv"
 UNKNOWN_DATASET_KEY = "<none>"
 
@@ -164,3 +165,97 @@ def test_two_runs_differing_only_in_target_both_complete_and_record_their_target
     assert run_a.target.base_url is None
     assert run_b.target.model_name == "model-b"
     assert run_b.target.base_url == "http://localhost:8000/v1"
+
+
+# --- 006 US1: failure details and per-type counts -----------------------------------
+
+CONNECT_FAILURE = FailureDetail(
+    type="ConnectError", message="[Errno 111] Connection refused", transient=False
+)
+AUTH_FAILURE = FailureDetail(
+    type="AuthenticationError", message="Error code: 401", transient=False
+)
+
+
+class FailureScriptedAnswerer:
+    """Answers the mini testset with the `expected` value, except `n`s mapped in
+    `failures`: those come back errored carrying that `FailureDetail` (or none at all,
+    as a legacy fake would)."""
+
+    def __init__(self, failures: dict[int, FailureDetail | None]) -> None:
+        records = json.loads(MINI_TESTSET.read_bytes())
+        self._by_question_text = {record["question"]: record for record in records}
+        self._failures = failures
+
+    def answer(self, question: str) -> QuestionAnsweringResult:
+        record = self._by_question_text[question]
+        if record["n"] in self._failures:
+            return QuestionAnsweringResult(
+                answer="Não foi possível processar a pergunta no momento.",
+                dataset_key=DATASET_KEY,
+                outcome="none",
+                errored=True,
+                failure=self._failures[record["n"]],
+            )
+        return QuestionAnsweringResult(
+            answer=f"A resposta é {record['expected']}.",
+            dataset_key=DATASET_KEY,
+            outcome="full",
+        )
+
+
+def test_errored_results_carry_the_answerers_failure_and_others_carry_none(
+    tmp_path: Path,
+) -> None:
+    failures: dict[int, FailureDetail | None] = {1: CONNECT_FAILURE, 2: AUTH_FAILURE}
+    run = run_testset(
+        MINI_TESTSET,
+        _target(),
+        answerer=FailureScriptedAnswerer(failures),
+        store=JsonFileRunStore(tmp_path),
+    )
+
+    for result in run.results:
+        if result.n in failures:
+            assert result.match_status == "errored"
+            assert result.failure == failures[result.n]
+        else:
+            assert result.failure is None
+
+
+def test_summary_counts_errored_questions_per_failure_type(tmp_path: Path) -> None:
+    run = run_testset(
+        MINI_TESTSET,
+        _target(),
+        answerer=FailureScriptedAnswerer({1: CONNECT_FAILURE, 4: CONNECT_FAILURE, 2: AUTH_FAILURE}),
+        store=JsonFileRunStore(tmp_path),
+    )
+
+    assert run.summary.errored_by_failure_type == {"ConnectError": 2, "AuthenticationError": 1}
+    assert run.summary.by_category["single-lookup"].errored_by_failure_type == {"ConnectError": 2}
+    assert run.summary.by_category["calculation"].errored_by_failure_type == {
+        "AuthenticationError": 1
+    }
+    assert run.summary.by_category["edge-cases"].errored_by_failure_type == {}
+
+
+def test_errored_result_without_a_failure_is_counted_as_unknown(tmp_path: Path) -> None:
+    run = run_testset(
+        MINI_TESTSET,
+        _target(),
+        answerer=FailureScriptedAnswerer({3: None}),
+        store=JsonFileRunStore(tmp_path),
+    )
+
+    assert run.summary.errored_by_failure_type == {"unknown": 1}
+
+
+def test_no_errored_questions_means_an_empty_failure_type_count(tmp_path: Path) -> None:
+    run = run_testset(
+        MINI_TESTSET,
+        _target(),
+        answerer=FailureScriptedAnswerer({}),
+        store=JsonFileRunStore(tmp_path),
+    )
+
+    assert run.summary.errored_by_failure_type == {}

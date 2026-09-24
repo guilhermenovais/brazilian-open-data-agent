@@ -43,7 +43,14 @@ def compare_runs(
     for entry in entries:
         summary[entry.transition] = summary.get(entry.transition, 0) + 1
 
-    return RunComparison(run_a=run_a.target, run_b=run_b.target, entries=entries, summary=summary)
+    return RunComparison(
+        run_a=run_a.target,
+        run_b=run_b.target,
+        entries=entries,
+        summary=summary,
+        retry_policy_a=run_a.retry_policy,
+        retry_policy_b=run_b.retry_policy,
+    )
 
 
 def _transition(status_a: MatchStatus, status_b: MatchStatus) -> Transition:

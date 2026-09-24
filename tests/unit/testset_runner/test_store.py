@@ -15,6 +15,8 @@ from testset_runner.models import (
 )
 from testset_runner.store import JsonFileRunStore
 
+PRE_006_RUN = Path(__file__).parent.parent.parent / "fixtures" / "testset_runner" / "pre-006-run.json"
+
 
 def _sample_run(run_id: str = "20260918T153000000000Z") -> TestRun:
     testset = Testset(path="fixture.json", content_hash="abc123", questions=[])
@@ -79,3 +81,11 @@ def test_load_raises_run_load_error_for_a_malformed_file(tmp_path: Path) -> None
     malformed.write_text("not json")
     with pytest.raises(RunLoadError):
         store.load(malformed)
+
+
+def test_a_pre_006_run_file_still_loads_with_new_fields_unrecorded(tmp_path: Path) -> None:
+    run = JsonFileRunStore(tmp_path).load(PRE_006_RUN)
+
+    assert any(r.match_status == "errored" for r in run.results)
+    assert all(r.failure is None for r in run.results)
+    assert run.summary.errored_by_failure_type is None

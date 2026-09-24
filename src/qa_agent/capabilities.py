@@ -3,6 +3,11 @@
 Never raises DatasetSelector*/DataAccessError/pydantic_ai exceptions to its caller —
 every reachable failure is caught here and translated into a QuestionAnsweringResult
 with a Portuguese answer and outcome="none" (research.md §10).
+
+The caught exception is no longer discarded: it is described as a `FailureDetail`
+(root-cause type, redacted and length-capped message, transient verdict) and carried on
+both the returned result and the run log entry (006 contracts/failure-details.md). The
+Portuguese answer texts themselves are unchanged.
 """
 
 from datetime import datetime, timezone
@@ -24,9 +29,11 @@ from dataset_selector.usage_log import SelectionLogger
 
 from qa_agent.agent_factory import build_agent
 from qa_agent.deps import AgentDeps
+from qa_agent.failures import describe_failure, never_transient
 from qa_agent.models import (
     AgentAnswer,
     AgentRunLogEntry,
+    FailureDetail,
     QuestionAnsweringResult,
     RetrievalStep,
 )
@@ -34,6 +41,7 @@ from qa_agent.prompt_loader import render
 from qa_agent.run_log import RunLogger
 from qa_agent.settings import AgentSettings
 from qa_agent.step_budget import RETRIEVAL_STEP_LIMIT, StepBudget
+from qa_agent.transient import classify
 
 _NO_DATASET_ANSWER = "Não foi possível determinar a base de dados para responder a esta pergunta."
 _PROCESSING_FAILED_ANSWER = "Não foi possível processar a pergunta no momento."
@@ -50,7 +58,7 @@ def answer_question(
 ) -> QuestionAnsweringResult:
     try:
         selection = select_dataset(question, selector, selection_logger)
-    except (NoBriefingsAvailableError, DatasetNotFoundError, BriefingNotFoundError):
+    except (NoBriefingsAvailableError, DatasetNotFoundError, BriefingNotFoundError) as exc:
         return _finalize(
             question=question,
             dataset_key=_UNKNOWN_DATASET_KEY,
@@ -58,6 +66,7 @@ def answer_question(
             outcome="none",
             run_logger=run_logger,
             errored=True,
+            failure=describe_failure(exc, secrets=[settings.api_key], classify=never_transient),
         )
 
     return _answer_with_selection(question, selection, run_logger=run_logger, settings=settings)
@@ -97,7 +106,7 @@ def _answer_with_selection(
         run_result = agent.run_sync(
             question, deps=deps, instructions=system_prompt, model=model_override
         )
-    except Exception:
+    except Exception as exc:
         return _finalize(
             question=question,
             dataset_key=selection.dataset_key,
@@ -105,6 +114,7 @@ def _answer_with_selection(
             outcome="none",
             run_logger=run_logger,
             errored=True,
+            failure=describe_failure(exc, secrets=[settings.api_key], classify=classify),
         )
 
     agent_answer: AgentAnswer = run_result.output
@@ -165,6 +175,7 @@ def _finalize(
     run_logger: RunLogger,
     steps: list[RetrievalStep] | None = None,
     errored: bool = False,
+    failure: FailureDetail | None = None,
 ) -> QuestionAnsweringResult:
     run_logger.log(
         AgentRunLogEntry(
@@ -172,6 +183,7 @@ def _finalize(
             dataset_key=dataset_key,
             outcome=outcome,
             timestamp=datetime.now(timezone.utc),
+            failure=failure,
         )
     )
     return QuestionAnsweringResult(
@@ -180,4 +192,5 @@ def _finalize(
         outcome=outcome,
         steps=steps or [],
         errored=errored,
+        failure=failure,
     )
