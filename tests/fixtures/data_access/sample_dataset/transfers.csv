@@ -1,0 +1,13 @@
+ano,orgao,uf,mes,valor,fornecedor
+2022,MS,SP,1,"1.000,00",Alfa
+2022,MS,RJ,2,"500,00",Beta
+2023,MS,SP,1,10,Alfa
+2023,MS,SP,2,20,Beta
+2023,MS,RJ,10,30,Alfa
+2023,ME,SP,2,"1.234,56",Alfa
+2023,ME,SP,10,n/d,
+2023,ME,MG,1,"2.000,00",Gama
+2022,ME,MG,2,"2.000,00",Gama
+2023,MC,SP,12,,Alfa
+2022,MC,RJ,12,"99,90",Beta
+2023,MC,MG,,"5,00",Alfa

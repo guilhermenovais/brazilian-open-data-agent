@@ -1,5 +1,7 @@
 # Contract: Aggregation
 
+> **Superseded** by [`specs/007-aggregate-rows-enhancements/contracts/aggregation.md`](../../007-aggregate-rows-enhancements/contracts/aggregation.md).
+
 ```python
 def aggregate_rows(
     dataset: Dataset,

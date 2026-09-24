@@ -67,21 +67,64 @@ class RowQueryResult(BaseModel):
     truncated: bool
 
 
+AggregateFunction = Literal["count", "sum", "mean", "min", "max", "count_distinct"]
+
+
 class AggregateSpec(BaseModel):
     value_field: str
-    function: Literal["count", "sum"]
+    function: AggregateFunction = Field(
+        description=(
+            "One of count, sum, mean, min, max, count_distinct. sum/mean/min/max need a "
+            "numeric-like value_field; count and count_distinct accept any field. The "
+            "result key is '<function>_<value_field>', e.g. 'sum_valor'."
+        )
+    )
+
+
+class SortKey(BaseModel):
+    key: str = Field(
+        description=(
+            "A group_by field or a result key '<function>_<value_field>' of a requested "
+            "aggregate. A name that is both refers to the grouping field."
+        )
+    )
+    direction: Literal["asc", "desc"] = Field(
+        default="asc", description="'asc' (default) or 'desc'."
+    )
 
 
 class AggregationRequest(BaseModel):
     group_by: list[str] = Field(min_length=1)
     aggregates: list[AggregateSpec] = Field(min_length=1)
+    filters: list[FilterCondition] = Field(
+        default_factory=list,
+        description=(
+            "Same conditions as query_rows (equals / contains / range), combined with AND "
+            "and applied before grouping: only matching rows are grouped and aggregated."
+        ),
+    )
+    order_by: list[SortKey] = Field(
+        default_factory=list,
+        description=(
+            "Applied in list order; later keys break ties of earlier ones. Missing values "
+            "sort last in both directions. Without order_by, groups are sorted ascending "
+            "by their grouping values."
+        ),
+    )
+    limit: int | None = Field(
+        default=None,
+        ge=1,
+        description="Maximum number of groups to return, applied after ordering.",
+    )
 
 
 class AggregationGroup(BaseModel):
     group_values: dict[str, str | None]
-    results: dict[str, float | int]
+    results: dict[str, float | int | None]
 
 
 class AggregationResult(BaseModel):
     identifier: str
     groups: list[AggregationGroup]
+    total_group_count: int
+    truncated: bool

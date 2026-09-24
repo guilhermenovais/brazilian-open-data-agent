@@ -2,12 +2,17 @@
 
 Plain Python functions (Constitution Engineering Principle 1 — no `pydantic-ai`
 import). A future `@agent.tool` adapter wraps each of these 1:1.
+
+Split with the query engine: capabilities read the source, validate requests (errors
+carry the identifier), classify fields as numeric-like on the **unfiltered** source,
+and apply result caps and counts. The engine does the mechanical work — filtering,
+and for aggregation filter → group → aggregate → order.
 """
 
 import pandas as pd
 
 from data_access.dataset import Dataset
-from data_access.exceptions import FieldNotFoundError, NumericTypeError
+from data_access.exceptions import FieldNotFoundError, InvalidSortKeyError, NumericTypeError
 from data_access.models import (
     AggregationRequest,
     AggregationResult,
@@ -39,7 +44,7 @@ def inspect_schema(dataset: Dataset, identifier: str) -> SchemaInspectionResult:
     fields = [
         FieldInfo(
             name=col,
-            type="numeric_like" if is_numeric_like(sample_df[col].tolist()) else "text",
+            type="numeric_like" if _is_numeric_field(df, col) else "text",
         )
         for col in observed_columns
     ]
@@ -76,6 +81,20 @@ def query_rows(
 def aggregate_rows(
     dataset: Dataset, identifier: str, request: AggregationRequest
 ) -> AggregationResult:
+    """Group the rows of one source and compute aggregates per group.
+
+    Pipeline: filter → group → aggregate → order (engine) → limit (here).
+
+    Errors, in this order (007 contracts/aggregation.md):
+    1. `DataSourceNotFoundError` / `UnreadableSourceError` from reading the source.
+    2. `FieldNotFoundError` for an unknown `group_by` field or `value_field`.
+    3. `FieldNotFoundError` / `NumericTypeError` for filters, exactly as `query_rows`.
+    4. `InvalidSortKeyError` for an `order_by` key that is neither a grouping field
+       nor a requested result key.
+    Then a source with no rows returns zero groups, and otherwise:
+    5. `NumericTypeError` when `sum`/`mean`/`min`/`max` targets a field that is not
+       numeric-like on the whole, unfiltered source.
+    """
     df = dataset.read(identifier)
 
     for field in request.group_by:
@@ -85,17 +104,44 @@ def aggregate_rows(
         if spec.value_field not in df.columns:
             raise FieldNotFoundError(identifier, spec.value_field)
 
+    _validate_filter_fields(identifier, df, request.filters)
+
+    valid_keys = list(
+        dict.fromkeys(
+            [*request.group_by, *(f"{s.function}_{s.value_field}" for s in request.aggregates)]
+        )
+    )
+    for sort_key in request.order_by:
+        if sort_key.key not in valid_keys:
+            raise InvalidSortKeyError(identifier, sort_key.key, valid_keys)
+
     if df.empty:
-        return AggregationResult(identifier=identifier, groups=[])
+        return AggregationResult(
+            identifier=identifier, groups=[], total_group_count=0, truncated=False
+        )
 
     for spec in request.aggregates:
-        if spec.function == "sum":
-            sample_values = df[spec.value_field].head(SAMPLE_SIZE_CAP).tolist()
-            if not is_numeric_like(sample_values):
-                raise NumericTypeError(identifier, spec.value_field)
+        if spec.function in ("sum", "mean", "min", "max") and not _is_numeric_field(
+            df, spec.value_field
+        ):
+            raise NumericTypeError(identifier, spec.value_field)
 
-    groups = _ENGINE.aggregate(df, request)
-    return AggregationResult(identifier=identifier, groups=groups)
+    numeric_group_fields = frozenset(f for f in request.group_by if _is_numeric_field(df, f))
+    all_groups = _ENGINE.aggregate(df, request, numeric_group_fields)
+    total_group_count = len(all_groups)
+    groups = all_groups if request.limit is None else all_groups[: request.limit]
+    return AggregationResult(
+        identifier=identifier,
+        groups=groups,
+        total_group_count=total_group_count,
+        truncated=total_group_count > len(groups),
+    )
+
+
+def _is_numeric_field(df: pd.DataFrame, field: str) -> bool:
+    """The one numeric-like rule: `is_numeric_like` over the first SAMPLE_SIZE_CAP
+    values of the (unfiltered) source, as `inspect_schema` reports it."""
+    return is_numeric_like(df[field].head(SAMPLE_SIZE_CAP).tolist())
 
 
 def _validate_filter_fields(
@@ -104,7 +150,5 @@ def _validate_filter_fields(
     for condition in filters:
         if condition.field not in df.columns:
             raise FieldNotFoundError(identifier, condition.field)
-        if isinstance(condition, RangeCondition):
-            sample_values = df[condition.field].head(SAMPLE_SIZE_CAP).tolist()
-            if not is_numeric_like(sample_values):
-                raise NumericTypeError(identifier, condition.field)
+        if isinstance(condition, RangeCondition) and not _is_numeric_field(df, condition.field):
+            raise NumericTypeError(identifier, condition.field)

@@ -39,6 +39,17 @@ class NumericTypeError(DataAccessError):
         )
 
 
+class InvalidSortKeyError(DataAccessError):
+    def __init__(self, identifier: str, key: str, valid_keys: list[str]) -> None:
+        self.identifier = identifier
+        self.key = key
+        self.valid_keys = valid_keys
+        super().__init__(
+            f"Sort key {key!r} is not valid for data source {identifier!r}; "
+            f"valid keys: {valid_keys!r}"
+        )
+
+
 class IdentifierCollisionError(DataAccessError):
     def __init__(self, identifier: str, physical_paths: list[str]) -> None:
         self.identifier = identifier

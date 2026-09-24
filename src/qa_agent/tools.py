@@ -67,6 +67,34 @@ def query_rows(
 def aggregate_rows(
     ctx: RunContext[AgentDeps], identifier: str, request: AggregationRequest
 ) -> AggregationResult | BudgetExhausted:
+    """Group the rows of one data source and compute aggregates for each group.
+
+    Filters apply first: `request.filters` takes the same conditions as `query_rows`
+    (`equals`, `contains`, `range`), combined with AND, and only matching rows are
+    grouped and aggregated, i.e. filters are applied before grouping.
+
+    Functions: `count` (rows in the group, any field); `sum`, `mean`, `min`, `max`
+    (numeric-like fields only; missing or unparseable values are ignored, and
+    `mean`/`min`/`max` are `null` when a group has no usable value, `sum` is 0);
+    `count_distinct` (number of distinct non-missing values, any field).
+
+    Each result is stored under the key `<function>_<value_field>`, e.g. `sum_valor`.
+    `order_by` accepts these result keys and the `group_by` fields; if a name is both,
+    it refers to the grouping field.
+
+    Ordering: `order_by` is a list of `{key, direction}` entries, where `direction`
+    is `asc` (default) or `desc`; later entries break ties. Missing values always
+    sort last. Without `order_by`, groups are sorted ascending by their grouping
+    values. For "top N" questions use `order_by` with `desc` plus `limit`.
+
+    Limit: optional, at least 1, and counts groups (applied after ordering). The
+    result reports `total_group_count` (groups before the limit) and `truncated`.
+
+    Args:
+        identifier: The data source identifier, as returned by discover_data_sources.
+        request: What to group by, which aggregates to compute, and optional
+            filters, order_by and limit.
+    """
     if not ctx.deps.step_budget.try_reserve():
         return BudgetExhausted()
     try:
