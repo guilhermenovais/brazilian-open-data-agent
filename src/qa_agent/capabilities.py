@@ -180,6 +180,7 @@ def _answer_with_selection(
         dataset=selection.dataset,
         dataset_key=selection.dataset_key,
         step_budget=step_budget,
+        text_matching=settings.text_matching,
     )
     if capture_deps is not None:
         capture_deps.append(deps)

@@ -16,6 +16,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Literal
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.answerer import ConversationalAnswerer
 from qa_agent.capabilities import CONVERSATION_PROMPT_VERSION
 from qa_agent.conversation import ConversationContext, ConversationTurn, fit_history
@@ -49,6 +50,7 @@ def run_conversations(
     prompt_version: str = CONVERSATION_PROMPT_VERSION,
     matcher: MatchStrategy = NumericMatchStrategy(),
     retry_policy: RetryPolicy = RetryPolicy(),
+    text_matching: TextMatchingConfig | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> ConversationRun:
     """Replays every scripted conversation, scores its turns, and saves one `ConversationRun`.
@@ -108,6 +110,7 @@ def run_conversations(
         prompt_version=prompt_version,
         results=results,
         summary=_summarize(results),
+        text_matching=text_matching,
     )
     store.save(run)
     return run

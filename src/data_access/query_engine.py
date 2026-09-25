@@ -5,6 +5,9 @@ messages) live in capabilities.py, not here — this module assumes its inputs a
 already valid and does purely mechanical work over an in-memory DataFrame of raw
 string values.
 
+`equals`/`contains` follow the `MatchRules` the engine is built with
+(data_access.text_matching; specs/009-text-value-matching/contracts/text-matching.md).
+
 `aggregate` receives the **unfiltered** source frame and runs the whole query itself:
 filter → group → aggregate → order (007 research.md §1). Numeric-like classification
 of fields, the group limit and the group counts stay in the capability, because
@@ -24,6 +27,7 @@ from data_access.models import (
     RangeCondition,
 )
 from data_access.numeric import parse_locale_number
+from data_access.text_matching import MatchRules, TextMatchingConfig
 
 _NUMERIC_FUNCTIONS = ("sum", "mean", "min", "max")
 
@@ -39,6 +43,17 @@ class QueryEngine(Protocol):
 
 
 class PandasQueryEngine:
+    """The pandas `QueryEngine`.
+
+    `rules` are the text-matching rules `equals`/`contains` filters apply (009
+    contracts/text-matching.md). They are a constructor argument, not part of the
+    `QueryEngine` protocol, so another engine receives the same `MatchRules` the same
+    way. The default is the rules of the default `TextMatchingConfig`.
+    """
+
+    def __init__(self, rules: MatchRules | None = None) -> None:
+        self._rules = rules if rules is not None else MatchRules.from_config(TextMatchingConfig())
+
     def query_rows(self, df: pd.DataFrame, filters: list[FilterCondition]) -> pd.DataFrame:
         mask = pd.Series(True, index=df.index)
         for condition in filters:
@@ -95,14 +110,30 @@ class PandasQueryEngine:
         return _order_groups(groups, request, numeric_group_fields)
 
     def _condition_mask(self, df: pd.DataFrame, condition: FilterCondition) -> pd.Series:
+        """The rows one condition keeps.
+
+        `equals`/`contains` use `self._rules` (009 contracts/text-matching.md): `equals`
+        compares whole normalized values (case, accents and punctuation ignored);
+        `contains` needs every non-stopword query word to start a word of the stored
+        value, in any order. Each distinct stored value is judged once and mapped back
+        onto the column (research.md R2). Missing values (`_is_missing`) never match
+        either operator, so since 009 `equals ""` and `contains ""` skip empty cells.
+        `range` is unchanged.
+        """
         column = df[condition.field]
 
-        if isinstance(condition, EqualsCondition):
-            return column == condition.value
-
-        if isinstance(condition, ContainsCondition):
-            needle = condition.value.lower()
-            return column.fillna("").str.lower().str.contains(needle, regex=False)
+        if isinstance(condition, (EqualsCondition, ContainsCondition)):
+            if isinstance(condition, EqualsCondition):
+                match = self._rules.equals
+            else:
+                match = self._rules.contains
+            value = condition.value
+            judged = {
+                stored: match(str(stored), value)
+                for stored in column.unique()
+                if not _is_missing(stored)
+            }
+            return cast(pd.Series, column.map(lambda stored: judged.get(stored, False)).astype(bool))
 
         if isinstance(condition, RangeCondition):
             numeric = column.map(lambda v: None if v is None else parse_locale_number(v))

@@ -11,6 +11,7 @@ from typing import Literal
 from pydantic import BaseModel, Field
 
 from qa_agent.models import FailureDetail, RetrievalStep
+from data_access.text_matching import TextMatchingConfig
 from testset_runner.models import RetryPolicy, TargetConfiguration
 
 TurnStatus = Literal["matched", "not_matched", "needs_review", "errored", "unscored"]
@@ -127,3 +128,5 @@ class ConversationRun(BaseModel):
     prompt_version: str
     results: list[ConversationResult]
     summary: ConversationRunSummary
+    text_matching: TextMatchingConfig | None = None
+    """The text-matching config the data tools used. `None` means a pre-009 run."""

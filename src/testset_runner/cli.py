@@ -18,6 +18,7 @@ import argparse
 import os
 import sys
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.answerer import QaAgentQuestionAnswerer
 from testset_runner.comparator import compare_runs
 from testset_runner.conversation_runner import run_conversations
@@ -48,7 +49,12 @@ def _run(args: argparse.Namespace) -> int:
 
     try:
         run = run_testset(
-            args.testset, target, answerer=answerer, store=store, retry_policy=retry_policy
+            args.testset,
+            target,
+            answerer=answerer,
+            store=store,
+            retry_policy=retry_policy,
+            text_matching=answerer.text_matching,
         )
     except TestsetLoadError as exc:
         print(f"Error: could not load testset — {exc}", file=sys.stderr)
@@ -71,6 +77,7 @@ def _run(args: argparse.Namespace) -> int:
             f"({cat_summary.total_questions} questions)"
         )
     print(f"Retry policy: {_describe_policy(run.retry_policy)}")
+    print(f"Text matching: {_describe_text_matching(run.text_matching)}")
     print(f"Questions retried: {_or_not_recorded(run.summary.retried_questions)}")
     print(
         "Errored after exhausting retries: "
@@ -124,6 +131,7 @@ def _run_conversations(args: argparse.Namespace) -> int:
             store=store,
             history_char_limit=answerer.history_char_limit,
             retry_policy=retry_policy,
+            text_matching=answerer.text_matching,
         )
     except TestsetLoadError as exc:
         print(f"Error: could not load testset — {exc}", file=sys.stderr)
@@ -148,6 +156,7 @@ def _run_conversations(args: argparse.Namespace) -> int:
         )
     print(f"Turns with ungrounded figures: {summary.turns_with_ungrounded_figures}")
     print(f"Retry policy: {_describe_policy(run.retry_policy)}")
+    print(f"Text matching: {_describe_text_matching(run.text_matching)}")
     print(f"History limit: {run.history_char_limit} characters; prompt: {run.prompt_version}")
     print(f"Saved run to {args.out_dir.rstrip('/')}/{run.run_id}.json")
     return 0
@@ -181,6 +190,15 @@ def _describe_policy(policy: RetryPolicy | None) -> str:
     return (
         f"max_attempts={policy.max_attempts}, waits {policy.initial_wait_seconds}s "
         f"x{policy.backoff_multiplier} (cap {policy.max_wait_seconds}s)"
+    )
+
+
+def _describe_text_matching(config: TextMatchingConfig | None) -> str:
+    if config is None:
+        return "not recorded"
+    return (
+        f"value_list_threshold={config.value_list_threshold}, "
+        f"max_suggestions={config.max_suggestions}, stopwords={config.stopwords}"
     )
 
 

@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.models import FailureDetail, RetrievalStep
 
 MatchStatus = Literal["matched", "not_matched", "needs_review", "errored"]
@@ -109,6 +110,9 @@ class TestRun(BaseModel):
     summary: RunSummary
     retry_policy: RetryPolicy | None = None
     """The retry policy the run used. `None` means a pre-006 run (not recorded)."""
+    text_matching: TextMatchingConfig | None = None
+    """The text-matching config the data tools used. `None` means a pre-009 run (not
+    recorded). Information only: `compare` never treats a difference as incompatible."""
 
 
 class ComparisonEntry(BaseModel):

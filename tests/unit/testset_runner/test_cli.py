@@ -40,7 +40,9 @@ def test_run_subcommand_accepts_explicit_flags_without_env_vars(monkeypatch, tmp
 
     captured: dict[str, object] = {}
 
-    def fake_run_testset(testset_path, target, *, answerer, store, matcher=None, retry_policy=None):
+    def fake_run_testset(
+        testset_path, target, *, answerer, store, matcher=None, retry_policy=None, text_matching=None
+    ):
         captured["testset_path"] = testset_path
         captured["target"] = target
         return _fake_run(target)
@@ -83,7 +85,9 @@ def test_run_subcommand_falls_back_to_env_vars_when_flags_are_omitted(
 
     captured: dict[str, object] = {}
 
-    def fake_run_testset(testset_path, target, *, answerer, store, matcher=None, retry_policy=None):
+    def fake_run_testset(
+        testset_path, target, *, answerer, store, matcher=None, retry_policy=None, text_matching=None
+    ):
         captured["target"] = target
         return _fake_run(target)
 
@@ -216,9 +220,14 @@ def _invoke_run(monkeypatch, tmp_path: Path, extra: list[str]) -> tuple[int, dic
         monkeypatch.delenv(var, raising=False)
     captured: dict[str, object] = {}
 
-    def fake_run_testset(testset_path, target, *, answerer, store, matcher=None, retry_policy=None):
+    def fake_run_testset(
+        testset_path, target, *, answerer, store, matcher=None, retry_policy=None, text_matching=None
+    ):
         captured["retry_policy"] = retry_policy
-        return _fake_run(target).model_copy(update={"retry_policy": retry_policy})
+        captured["text_matching"] = text_matching
+        return _fake_run(target).model_copy(
+            update={"retry_policy": retry_policy, "text_matching": text_matching}
+        )
 
     monkeypatch.setattr(cli_module, "run_testset", fake_run_testset)
     args = build_parser().parse_args(
@@ -444,6 +453,49 @@ def test_run_conversations_report(monkeypatch, tmp_path: Path, capsys) -> None:
         "  follow-up-year: 100.0% (3 scored turns)",
         "Turns with ungrounded figures: 2",
         "Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)",
+        "Text matching: not recorded",
         "History limit: 16000 characters; prompt: v2",
         f"Saved run to {str(tmp_path).rstrip('/')}/20260925T120000000000Z.json",
     ]
+
+
+# --- 009: text matching passed to the run and reported --------------------------------
+
+
+def test_009_run_records_and_prints_the_answerers_text_matching(
+    monkeypatch, tmp_path: Path, capsys
+) -> None:
+    from data_access.text_matching import TextMatchingConfig
+
+    _, captured = _invoke_run(monkeypatch, tmp_path, [])
+
+    assert captured["text_matching"] == TextMatchingConfig()
+    lines = capsys.readouterr().out.splitlines()
+    retry = next(i for i, line in enumerate(lines) if line.startswith("Retry policy:"))
+    assert lines[retry + 1] == (
+        "Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1"
+    )
+
+
+def test_009_run_conversations_passes_the_answerers_text_matching(
+    monkeypatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    captured_kwargs: dict[str, object] = {}
+
+    def fake_run_conversations(testset_path, target, *, answerer, store, **kwargs):
+        captured_kwargs.update(kwargs, answerer=answerer)
+        return _fake_conversation_run(
+            target,
+            history_char_limit=kwargs["history_char_limit"],
+            retry_policy=kwargs["retry_policy"],
+        )
+
+    monkeypatch.setattr(cli_module, "run_conversations", fake_run_conversations)
+    args = build_parser().parse_args(
+        ["run-conversations", "--testset", "c.json", "--out-dir", str(tmp_path)]
+    )
+
+    assert args.func(args) == 0
+    answerer = captured_kwargs["answerer"]
+    assert captured_kwargs["text_matching"] is answerer.text_matching  # type: ignore[attr-defined]

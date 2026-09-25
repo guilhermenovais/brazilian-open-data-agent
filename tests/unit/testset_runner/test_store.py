@@ -97,6 +97,7 @@ def test_a_pre_006_run_file_still_loads_with_new_fields_unrecorded(tmp_path: Pat
     assert any(r.match_status == "errored" for r in run.results)
     assert all(r.failure is None for r in run.results)
     assert run.summary.errored_by_failure_type is None
+    assert run.text_matching is None
 
 
 # --- 008: JsonFileConversationRunStore ---------------------------------------------

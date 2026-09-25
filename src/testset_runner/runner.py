@@ -5,6 +5,7 @@ from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.answerer import QuestionAnswerer
 from qa_agent.models import FailureDetail, QuestionAnsweringResult
 from testset_runner.loader import TestsetLoader
@@ -39,6 +40,7 @@ def run_testset(
     matcher: MatchStrategy = NumericMatchStrategy(),
     store: RunStore,
     retry_policy: RetryPolicy = RetryPolicy(),
+    text_matching: TextMatchingConfig | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> TestRun:
     """Asks every question of the testset, grades the answers, and saves one `TestRun`.
@@ -49,6 +51,9 @@ def run_testset(
     or from another question, is ever passed back in, so per-question isolation holds
     for attempts too. Only the bookkeeping (`attempts`, `failed_attempts`) is carried
     between attempts, and the recorded result is always the last attempt's.
+
+    `text_matching` is recorded on the run as given (the answerer's own config; `None`
+    when the caller does not know it).
 
     `sleep` is a test seam so the wait sequence can be asserted without real waiting. A
     `KeyboardInterrupt` during a wait propagates out before `store.save`, so no partial
@@ -92,6 +97,7 @@ def run_testset(
         results=results,
         summary=summary,
         retry_policy=retry_policy,
+        text_matching=text_matching,
     )
     store.save(run)
     return run

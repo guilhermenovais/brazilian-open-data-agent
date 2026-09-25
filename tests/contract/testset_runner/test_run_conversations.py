@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.conversation import ConversationContext
 from qa_agent.models import FailureDetail, QuestionAnsweringResult, RetrievalStep
 from testset_runner.conversation_models import ConversationRun
@@ -57,7 +58,15 @@ def _write(tmp_path: Path, conversations: list[dict]) -> Path:
     return path
 
 
-def _run(tmp_path: Path, conversations: list[dict], answerer, *, limit: int = 16_000, store=None):
+def _run(
+    tmp_path: Path,
+    conversations: list[dict],
+    answerer,
+    *,
+    limit: int = 16_000,
+    store=None,
+    **kwargs,
+):
     return run_conversations(
         _write(tmp_path, conversations),
         TargetConfiguration(model_name="fake"),
@@ -66,6 +75,7 @@ def _run(tmp_path: Path, conversations: list[dict], answerer, *, limit: int = 16
         history_char_limit=limit,
         retry_policy=RetryPolicy(max_attempts=1),
         sleep=lambda _seconds: None,
+        **kwargs,
     )
 
 
@@ -280,3 +290,19 @@ def test_a_testset_load_error_saves_nothing(tmp_path: Path) -> None:
             history_char_limit=16_000,
         )
     assert store.saved == []
+
+
+# --- 009: text matching configuration recorded on the run (FR-016) -----------------------
+
+
+def test_009_text_matching_is_recorded_and_round_trips(tmp_path: Path) -> None:
+    config = TextMatchingConfig(max_suggestions=2)
+    store = JsonFileConversationRunStore(tmp_path / "runs")
+    run = _run(tmp_path, TWO_CONVERSATIONS, RecordingAnswerer(), store=store, text_matching=config)
+
+    assert run.text_matching == config
+    assert store.load(tmp_path / "runs" / f"{run.run_id}.json").text_matching == config
+
+
+def test_009_text_matching_not_given_is_recorded_as_none(tmp_path: Path) -> None:
+    assert _run(tmp_path, TWO_CONVERSATIONS, RecordingAnswerer()).text_matching is None

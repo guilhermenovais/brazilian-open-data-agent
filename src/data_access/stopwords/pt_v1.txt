@@ -1,0 +1,56 @@
+# Portuguese stopwords, version pt_v1 (specs/009-text-value-matching/research.md R3).
+#
+# Used by `contains` filters and value-suggestion ranking to skip filler words. One word
+# per line; blank lines and lines starting with "#" are ignored. Words are normalized on
+# load (accents dropped, casefolded), so "à" and "até" become "a" and "ate".
+#
+# Named versions are never edited in place: a changed list is a new file (pt_v2.txt),
+# selected by name in TextMatchingConfig.stopwords, so recorded runs stay reproducible.
+
+# Articles
+a
+o
+as
+os
+um
+uma
+uns
+umas
+
+# Prepositions and contractions
+de
+do
+da
+dos
+das
+em
+no
+na
+nos
+nas
+num
+numa
+dum
+duma
+ao
+aos
+à
+às
+por
+pelo
+pela
+pelos
+pelas
+para
+pra
+com
+sem
+sob
+até
+
+# Conjunctions
+e
+ou
+nem
+mas
+que

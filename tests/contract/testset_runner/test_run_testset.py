@@ -5,7 +5,9 @@ and User Story 3 (differing target configuration), per contracts/running.md.
 import json
 from pathlib import Path
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.models import FailureDetail, QuestionAnsweringResult
+from testset_runner.comparator import compare_runs
 from testset_runner.models import TargetConfiguration
 from testset_runner.runner import run_testset
 from testset_runner.store import JsonFileRunStore
@@ -259,3 +261,51 @@ def test_no_errored_questions_means_an_empty_failure_type_count(tmp_path: Path) 
     )
 
     assert run.summary.errored_by_failure_type == {}
+
+
+# --- 009: text matching configuration recorded on the run (FR-016) -----------------------
+
+
+def test_009_text_matching_is_recorded_and_round_trips(tmp_path: Path) -> None:
+    config = TextMatchingConfig(value_list_threshold=12, max_suggestions=3)
+    store = JsonFileRunStore(tmp_path)
+    run = run_testset(
+        MINI_TESTSET,
+        _target(),
+        answerer=ScriptedAnswerer(MINI_TESTSET),
+        store=store,
+        text_matching=config,
+    )
+
+    assert run.text_matching == config
+    assert store.load(tmp_path / f"{run.run_id}.json").text_matching == config
+
+
+def test_009_text_matching_not_given_is_recorded_as_none(tmp_path: Path) -> None:
+    store = JsonFileRunStore(tmp_path)
+    run = run_testset(
+        MINI_TESTSET, _target(), answerer=ScriptedAnswerer(MINI_TESTSET), store=store
+    )
+
+    assert run.text_matching is None
+    assert store.load(tmp_path / f"{run.run_id}.json").text_matching is None
+
+
+def test_009_compare_accepts_runs_differing_only_in_text_matching(tmp_path: Path) -> None:
+    store = JsonFileRunStore(tmp_path)
+    run_a = run_testset(
+        MINI_TESTSET, _target(), answerer=ScriptedAnswerer(MINI_TESTSET), store=store
+    )
+    run_b = run_testset(
+        MINI_TESTSET,
+        _target(),
+        answerer=ScriptedAnswerer(MINI_TESTSET),
+        store=store,
+        text_matching=TextMatchingConfig(),
+    )
+
+    comparison = compare_runs(
+        tmp_path / f"{run_a.run_id}.json", tmp_path / f"{run_b.run_id}.json", store=store
+    )
+
+    assert len(comparison.entries) == len(run_a.results)

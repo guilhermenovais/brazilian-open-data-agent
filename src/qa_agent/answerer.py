@@ -20,6 +20,7 @@ from dataset_selector.locator import LocalDatasetLocator
 from dataset_selector.selector import StaticDatasetSelector
 from dataset_selector.usage_log import JsonlSelectionLogger
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.capabilities import answer_question, answer_turn
 from qa_agent.conversation import ConversationContext
 from qa_agent.models import QuestionAnsweringResult
@@ -61,12 +62,14 @@ class QaAgentQuestionAnswerer:
         selection_log_path: str | Path = DEFAULT_SELECTION_LOG_PATH,
         run_log_path: str | Path = DEFAULT_RUN_LOG_PATH,
         history_char_limit: int = 16_000,
+        text_matching: TextMatchingConfig = TextMatchingConfig(),
     ) -> None:
         self._settings = AgentSettings(
             model_name=model_name,
             base_url=base_url,
             api_key=api_key,
             history_char_limit=history_char_limit,
+            text_matching=text_matching,
         )
         self._selector = StaticDatasetSelector(
             briefing_source=FileBriefingSource(briefings_root),
@@ -88,6 +91,11 @@ class QaAgentQuestionAnswerer:
     def history_char_limit(self) -> int:
         """The history limit `answer_turn` applies, so callers can record it."""
         return self._settings.history_char_limit
+
+    @property
+    def text_matching(self) -> TextMatchingConfig:
+        """The text-matching config the data tools use, so callers can record it (009)."""
+        return self._settings.text_matching
 
     def answer_turn(self, message: str, context: ConversationContext) -> QuestionAnsweringResult:
         return answer_turn(
