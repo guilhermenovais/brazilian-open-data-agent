@@ -198,8 +198,8 @@
   {
     "n": 29,
     "type": "calculation",
-    "question": "Quantas ações orçamentárias diferentes tiveram gastos em 2008?",
-    "expected": "31",
+    "question": "Quantas ações orçamentárias diferentes tiveram gastos pagos em 2008?",
+    "expected": "27",
     "source": "dados_gerais/tb_geral.csv"
   },
   {
@@ -350,4 +350,3 @@
     "source": "n/a"
   }
 ]
-
