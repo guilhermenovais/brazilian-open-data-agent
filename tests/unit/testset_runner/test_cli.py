@@ -292,3 +292,158 @@ def test_compare_prints_each_runs_retry_policy_or_not_recorded(monkeypatch, caps
     assert lines[1] == "  retry policy: not recorded"
     assert lines[2].startswith("Run B:")
     assert lines[3] == "  retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)"
+
+
+# --- 008: run-conversations -----------------------------------------------------------
+
+
+def _fake_conversation_run(target, *, history_char_limit, retry_policy, summary=None):
+    from testset_runner.conversation_models import (
+        ConversationRun,
+        ConversationRunSummary,
+        ConversationTestset,
+    )
+
+    return ConversationRun(
+        run_id="20260925T120000000000Z",
+        created_at=datetime.now(timezone.utc),
+        testset=ConversationTestset(path="c.json", content_hash="abc", conversations=[]),
+        target=target,
+        retry_policy=retry_policy,
+        history_char_limit=history_char_limit,
+        prompt_version="v2",
+        results=[],
+        summary=summary
+        or ConversationRunSummary(
+            total_conversations=0,
+            total_turns=0,
+            scored_turns=0,
+            match_rate=0.0,
+            by_status={},
+            by_category={},
+            turns_with_ungrounded_figures=0,
+            target_unreachable=False,
+        ),
+    )
+
+
+def _invoke_conversations(monkeypatch, tmp_path: Path, extra: list[str], summary=None) -> tuple[int, dict]:
+    for var in ("QA_AGENT_BASE_URL", "QA_AGENT_API_KEY", "QA_AGENT_MAX_ATTEMPTS"):
+        monkeypatch.delenv(var, raising=False)
+    captured: dict[str, object] = {}
+
+    def fake_run_conversations(
+        testset_path, target, *, answerer, store, history_char_limit, retry_policy, **kwargs
+    ):
+        captured.update(
+            testset_path=testset_path,
+            target=target,
+            answerer=answerer,
+            history_char_limit=history_char_limit,
+            retry_policy=retry_policy,
+        )
+        return _fake_conversation_run(
+            target, history_char_limit=history_char_limit, retry_policy=retry_policy, summary=summary
+        )
+
+    monkeypatch.setattr(cli_module, "run_conversations", fake_run_conversations)
+    args = build_parser().parse_args(
+        ["run-conversations", "--testset", "c.json", "--out-dir", str(tmp_path), *extra]
+    )
+    return args.func(args), captured
+
+
+def test_run_conversations_accepts_every_flag(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("QA_AGENT_MODEL", raising=False)
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+
+    exit_code, captured = _invoke_conversations(
+        monkeypatch,
+        tmp_path,
+        [
+            "--model", "m",
+            "--base-url", "http://localhost:8000/v1",
+            "--api-key", "EMPTY",
+            "--max-attempts", "2",
+            "--history-char-limit", "500",
+        ],
+    )
+
+    assert exit_code == 0
+    assert captured["testset_path"] == "c.json"
+    assert captured["target"] == TargetConfiguration(model_name="m", base_url="http://localhost:8000/v1")
+    assert captured["retry_policy"] == RetryPolicy(max_attempts=2)
+    assert captured["history_char_limit"] == 500
+    assert captured["answerer"].history_char_limit == 500  # type: ignore[attr-defined]
+
+
+def test_run_conversations_history_limit_defaults_and_env_fallback(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+    _, captured = _invoke_conversations(monkeypatch, tmp_path, [])
+    assert captured["history_char_limit"] == 16000
+
+    monkeypatch.setenv("QA_AGENT_HISTORY_CHAR_LIMIT", "700")
+    _, captured = _invoke_conversations(monkeypatch, tmp_path, [])
+    assert captured["history_char_limit"] == 700
+
+
+@pytest.mark.parametrize("value", ["-1", "abc", "1.5"])
+def test_run_conversations_rejects_an_invalid_history_limit(
+    monkeypatch, tmp_path: Path, capsys, value: str
+) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+
+    exit_code, captured = _invoke_conversations(monkeypatch, tmp_path, [f"--history-char-limit={value}"])
+
+    assert exit_code == 1
+    assert captured == {}
+    assert "Error: --history-char-limit must be an integer >= 0." in capsys.readouterr().err
+
+
+def test_run_conversations_requires_a_model(monkeypatch, tmp_path: Path, capsys) -> None:
+    monkeypatch.delenv("QA_AGENT_MODEL", raising=False)
+    exit_code, captured = _invoke_conversations(monkeypatch, tmp_path, [])
+    assert exit_code == 1
+    assert captured == {}
+    assert "Error: --model is required (or set QA_AGENT_MODEL)." in capsys.readouterr().err
+
+
+def test_run_conversations_report(monkeypatch, tmp_path: Path, capsys) -> None:
+    from testset_runner.conversation_models import ConversationRunSummary
+
+    def cat(rate: float, scored: int) -> ConversationRunSummary:
+        return ConversationRunSummary(
+            total_conversations=1, total_turns=2, scored_turns=scored, match_rate=rate,
+            by_status={}, by_category={}, turns_with_ungrounded_figures=0, target_unreachable=False,
+        )
+
+    summary = ConversationRunSummary(
+        total_conversations=4,
+        total_turns=9,
+        scored_turns=6,
+        match_rate=5 / 6,
+        by_status={},
+        by_category={"follow-up-year": cat(1.0, 3), "clarification": cat(2 / 3, 3)},
+        turns_with_ungrounded_figures=2,
+        target_unreachable=True,
+    )
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+
+    _invoke_conversations(monkeypatch, tmp_path, [], summary=summary)
+
+    lines = capsys.readouterr().out.splitlines()
+    assert lines == [
+        "Run 20260925T120000000000Z: 4 conversations, 9 turns (6 scored)",
+        "WARNING: the target model/URL appears unreachable for the whole run — "
+        "the match rate below is not meaningful.",
+        "Match rate (scored turns): 83.3%",
+        "By category:",
+        "  clarification: 66.7% (3 scored turns)",
+        "  follow-up-year: 100.0% (3 scored turns)",
+        "Turns with ungrounded figures: 2",
+        "Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)",
+        "History limit: 16000 characters; prompt: v2",
+        f"Saved run to {str(tmp_path).rstrip('/')}/20260925T120000000000Z.json",
+    ]

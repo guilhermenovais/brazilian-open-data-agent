@@ -5,15 +5,23 @@ from pathlib import Path
 
 import pytest
 
+from testset_runner.conversation_models import (
+    ConversationResult,
+    ConversationRun,
+    ConversationRunSummary,
+    ConversationTestset,
+    TurnResult,
+)
 from testset_runner.exceptions import RunLoadError
 from testset_runner.models import (
     QuestionResult,
+    RetryPolicy,
     RunSummary,
     TargetConfiguration,
     Testset,
     TestRun,
 )
-from testset_runner.store import JsonFileRunStore
+from testset_runner.store import JsonFileConversationRunStore, JsonFileRunStore
 
 PRE_006_RUN = Path(__file__).parent.parent.parent / "fixtures" / "testset_runner" / "pre-006-run.json"
 
@@ -89,3 +97,65 @@ def test_a_pre_006_run_file_still_loads_with_new_fields_unrecorded(tmp_path: Pat
     assert any(r.match_status == "errored" for r in run.results)
     assert all(r.failure is None for r in run.results)
     assert run.summary.errored_by_failure_type is None
+
+
+# --- 008: JsonFileConversationRunStore ---------------------------------------------
+
+
+def _sample_conversation_run(run_id: str = "20260925T120000000000Z") -> ConversationRun:
+    turn = TurnResult(
+        turn_index=1,
+        message="Quanto?",
+        expected="10",
+        actual_answer="10",
+        agent_outcome="full",
+        dataset_key="sample",
+        steps=[],
+        history_turns_sent=0,
+        history_turns_used=0,
+        scored=True,
+        status="matched",
+        attempts=1,
+    )
+    summary = ConversationRunSummary(
+        total_conversations=1,
+        total_turns=1,
+        scored_turns=1,
+        match_rate=1.0,
+        by_status={"matched": 1},
+        by_category={},
+        turns_with_ungrounded_figures=0,
+        target_unreachable=False,
+    )
+    return ConversationRun(
+        run_id=run_id,
+        created_at=datetime.now(timezone.utc),
+        testset=ConversationTestset(path="c.json", content_hash="abc", conversations=[]),
+        target=TargetConfiguration(model_name="fake"),
+        retry_policy=RetryPolicy(),
+        history_char_limit=16_000,
+        prompt_version="v2",
+        results=[ConversationResult(conversation_id="c1", category="cat", turns=[turn])],
+        summary=summary,
+    )
+
+
+def test_conversation_store_round_trips_a_run(tmp_path: Path) -> None:
+    store = JsonFileConversationRunStore(tmp_path)
+    run = _sample_conversation_run()
+
+    path = store.save(run)
+
+    assert Path(path).name == f"{run.run_id}.json"
+    assert store.load(path) == run
+
+
+def test_conversation_store_rejects_a_standalone_run_file(tmp_path: Path) -> None:
+    standalone_path = JsonFileRunStore(tmp_path).save(_sample_run())
+    with pytest.raises(RunLoadError):
+        JsonFileConversationRunStore(tmp_path).load(standalone_path)
+
+
+def test_conversation_store_raises_for_a_missing_path(tmp_path: Path) -> None:
+    with pytest.raises(RunLoadError):
+        JsonFileConversationRunStore(tmp_path).load(tmp_path / "nope.json")

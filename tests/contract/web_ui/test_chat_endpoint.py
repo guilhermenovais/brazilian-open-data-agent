@@ -1,7 +1,7 @@
 """Contract test for `POST /api/chat` (contracts/chat-api.md).
 
 Drives the real Starlette app end-to-end via `starlette.testclient.TestClient`, with a
-`FunctionModel`-backed `QuestionAnswerer` double standing in for `QaAgentQuestionAnswerer`
+`FunctionModel`-backed `ConversationalAnswerer` double standing in for `QaAgentQuestionAnswerer`
 (same model-override technique as
 `tests/contract/qa_agent/test_answer_question_dispatch.py`) so no live model call is made.
 """
@@ -24,6 +24,7 @@ from dataset_selector.locator import LocalDatasetLocator
 from dataset_selector.selector import StaticDatasetSelector
 from dataset_selector.usage_log import JsonlSelectionLogger
 from qa_agent.capabilities import _answer_with_selection
+from qa_agent.conversation import ConversationContext, ConversationTurn
 from qa_agent.models import QuestionAnsweringResult
 from qa_agent.run_log import JsonlRunLogger
 from qa_agent.settings import AgentSettings
@@ -38,9 +39,10 @@ _UNKNOWN_DATASET_KEY = "<none>"
 
 
 class _ScriptedQuestionAnswerer:
-    """`QuestionAnswerer` double answering via the real selection + agent-run path, with a
-    scripted `FunctionModel` in place of a live model call — the same shape
-    `QaAgentQuestionAnswerer.answer` has, minus the fixed model resolution.
+    """`QuestionAnswerer` + `ConversationalAnswerer` double answering via the real selection
+    + agent-run path, with a scripted `FunctionModel` in place of a live model call — the
+    same shape `QaAgentQuestionAnswerer` has, minus the fixed model resolution.
+    `answer_turn` also records every `(message, context)` the endpoint passed in.
     """
 
     def __init__(self, model: FunctionModel, tmp_path: Path) -> None:
@@ -53,6 +55,11 @@ class _ScriptedQuestionAnswerer:
         self._run_logger = JsonlRunLogger(tmp_path / "runs.jsonl")
         self._settings = AgentSettings(model_name="test", instrument=False)
         self.calls: list[str] = []
+        self.turn_calls: list[tuple[str, ConversationContext]] = []
+
+    def answer_turn(self, message: str, context: ConversationContext) -> QuestionAnsweringResult:
+        self.turn_calls.append((message, context))
+        return self.answer(message)
 
     def answer(self, question: str) -> QuestionAnsweringResult:
         self.calls.append(question)
@@ -162,3 +169,117 @@ def test_options_chat_has_no_cors_headers(tmp_path: Path) -> None:
 
     assert response.status_code == 200
     assert "access-control-allow-origin" not in response.headers
+
+
+# --- 008: the conversation reaches answer_turn ---------------------------------------
+
+
+def _conversation_payload(chat_id: str, texts: list[tuple[str, str]]) -> dict:
+    return {
+        "id": chat_id,
+        "trigger": "submit-message",
+        "messages": [
+            {"id": f"m{i}", "role": role, "parts": [{"type": "text", "text": text}]}
+            for i, (role, text) in enumerate(texts, start=1)
+        ],
+    }
+
+
+def _client(answerer: _ScriptedQuestionAnswerer) -> TestClient:
+    return TestClient(create_app(answerer, host="127.0.0.1"), base_url="http://127.0.0.1")
+
+
+def test_the_contract_example_forwards_the_history_to_answer_turn(tmp_path: Path) -> None:
+    answerer = _ScriptedQuestionAnswerer(FunctionModel(_scripted_answer("Em 2016, …")), tmp_path)
+
+    response = _client(answerer).post(
+        "/api/chat",
+        json=_conversation_payload(
+            "chat-1",
+            [
+                ("user", "Quanto foi pago pela AEB em 2015?"),
+                ("assistant", "Em 2015, o valor pago foi de R$ …"),
+                ("user", "e em 2016?"),
+            ],
+        ),
+    )
+
+    assert response.status_code == 200
+    assert _text_from_chunks(_decode_sse_chunks(response.text)) == "Em 2016, …"
+    assert answerer.turn_calls == [
+        (
+            "e em 2016?",
+            ConversationContext(
+                conversation_id="chat-1",
+                turn_index=2,
+                history=[
+                    ConversationTurn(
+                        question="Quanto foi pago pela AEB em 2015?",
+                        answer="Em 2015, o valor pago foi de R$ …",
+                    )
+                ],
+            ),
+        )
+    ]
+
+
+def test_an_answerer_exception_still_becomes_the_generic_error_chunk(tmp_path: Path) -> None:
+    class Exploding(_ScriptedQuestionAnswerer):
+        def answer_turn(self, message, context):
+            raise RuntimeError("secret sk-leak in a provider URL")
+
+    answerer = Exploding(FunctionModel(_scripted_answer("unused")), tmp_path)
+
+    response = _client(answerer).post("/api/chat", json=_submit_message_payload(QUESTION))
+
+    chunks = _decode_sse_chunks(response.text)
+    assert chunks == [{"type": "error", "errorText": "Ocorreu um erro inesperado ao processar a pergunta."}]
+
+
+def test_interleaved_chats_only_see_their_own_messages(tmp_path: Path) -> None:
+    """FR-007 / US3-AS2: no server-side state; each request's context is its own payload."""
+    answerer = _ScriptedQuestionAnswerer(FunctionModel(_scripted_answer("ok")), tmp_path)
+    client = _client(answerer)
+
+    client.post("/api/chat", json=_conversation_payload("chat-a", [("user", "Quanto foi pago em 2015?")]))
+    client.post("/api/chat", json=_conversation_payload("chat-b", [("user", "Quanto foi empenhado em 2012?")]))
+    client.post(
+        "/api/chat",
+        json=_conversation_payload(
+            "chat-a",
+            [("user", "Quanto foi pago em 2015?"), ("assistant", "R$ 10"), ("user", "e em 2016?")],
+        ),
+    )
+    client.post(
+        "/api/chat",
+        json=_conversation_payload(
+            "chat-b",
+            [("user", "Quanto foi empenhado em 2012?"), ("assistant", "R$ 20"), ("user", "e em 2013?")],
+        ),
+    )
+
+    contexts = [context for _, context in answerer.turn_calls]
+    assert [c.conversation_id for c in contexts] == ["chat-a", "chat-b", "chat-a", "chat-b"]
+    assert contexts[2].history == [ConversationTurn(question="Quanto foi pago em 2015?", answer="R$ 10")]
+    assert contexts[3].history == [ConversationTurn(question="Quanto foi empenhado em 2012?", answer="R$ 20")]
+
+
+def test_a_new_chat_starts_empty_after_other_chats_on_the_same_app(tmp_path: Path) -> None:
+    """FR-008 / US3-AS1."""
+    answerer = _ScriptedQuestionAnswerer(FunctionModel(_scripted_answer("ok")), tmp_path)
+    client = _client(answerer)
+    client.post(
+        "/api/chat",
+        json=_conversation_payload(
+            "chat-old",
+            [("user", "Quanto foi pago em 2015?"), ("assistant", "R$ 10"), ("user", "e em 2016?")],
+        ),
+    )
+
+    client.post("/api/chat", json=_conversation_payload("chat-new", [("user", "e em 2016?")]))
+
+    message, context = answerer.turn_calls[-1]
+    assert message == "e em 2016?"
+    assert context.conversation_id == "chat-new"
+    assert context.history == []
+    assert context.turn_index == 1

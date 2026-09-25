@@ -60,7 +60,7 @@ def run_testset(
     results: list[QuestionResult] = []
     for question in testset.questions:
         answer_result, attempts, failed_attempts = _ask_with_retry(
-            answerer, question.question, retry_policy, sleep
+            lambda: answerer.answer(question.question), retry_policy, sleep
         )
         if answer_result.errored:
             match_status = "errored"
@@ -98,12 +98,15 @@ def run_testset(
 
 
 def _ask_with_retry(
-    answerer: QuestionAnswerer,
-    question: str,
+    ask: Callable[[], QuestionAnsweringResult],
     policy: RetryPolicy,
     sleep: Callable[[float], None],
 ) -> tuple[QuestionAnsweringResult, int, list[FailureDetail]]:
     """Returns the last attempt's result, the number of attempts, and every failure seen.
+
+    `ask` makes one fresh attempt. It is a callable rather than an answerer + question so
+    the standalone runner (`answerer.answer(question)`) and the conversation runner
+    (`answerer.answer_turn(message, context)`) share one retry loop.
 
     An errored result with no `failure` (a legacy/third-party answerer) is treated as a
     non-transient failure with no details.
@@ -112,7 +115,7 @@ def _ask_with_retry(
     attempts = 0
     while True:
         attempts += 1
-        result = answerer.answer(question)
+        result = ask()
         if not result.errored:
             return result, attempts, failed_attempts
         failure = result.failure

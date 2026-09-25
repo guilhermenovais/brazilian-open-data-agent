@@ -5,6 +5,9 @@ Every agent-config flag falls back to the same `QA_AGENT_*` environment variable
 for the testset runner gets the web UI "for free". `--host`/`--port` are new to this
 command and fall back to `QA_WEB_*` instead, keeping `AgentSettings`'s env prefix scoped to
 agent config only. For every flag/env pair, an explicitly-passed flag wins (FR-003).
+
+`--history-char-limit` (008) falls back to `QA_AGENT_HISTORY_CHAR_LIMIT`, then 16000: the
+characters of earlier turns sent with each chat message (008 contracts/cli.md).
 """
 
 import argparse
@@ -27,7 +30,20 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--api-key")
     parser.add_argument("--host")
     parser.add_argument("--port", type=int)
+    parser.add_argument("--history-char-limit")
     return parser
+
+
+_DEFAULT_HISTORY_CHAR_LIMIT = "16000"
+
+
+def _parse_history_char_limit(raw: str) -> int | None:
+    """The value as an int ≥ 0, or `None` when it is anything else."""
+    try:
+        value = int(raw)
+    except ValueError:
+        return None
+    return value if value >= 0 else None
 
 
 def _port_in_use(host: str, port: int) -> bool:
@@ -54,6 +70,14 @@ def main() -> None:
         sys.exit(1)
     base_url = args.base_url or os.environ.get("QA_AGENT_BASE_URL")
     api_key = args.api_key or os.environ.get("QA_AGENT_API_KEY")
+    history_char_limit = _parse_history_char_limit(
+        args.history_char_limit
+        or os.environ.get("QA_AGENT_HISTORY_CHAR_LIMIT")
+        or _DEFAULT_HISTORY_CHAR_LIMIT
+    )
+    if history_char_limit is None:
+        print("Error: --history-char-limit must be an integer >= 0.", file=sys.stderr)
+        sys.exit(1)
 
     # Only the flags actually passed are forwarded — `WebServerSettings`'s own
     # env-then-default resolution (pydantic-settings) governs anything left unset,
@@ -71,10 +95,13 @@ def main() -> None:
         print(f"Error: {settings.host}:{settings.port} is already in use.", file=sys.stderr)
         sys.exit(1)
 
-    answerer = QaAgentQuestionAnswerer(model, base_url, api_key=api_key)
+    answerer = QaAgentQuestionAnswerer(
+        model, base_url, api_key=api_key, history_char_limit=history_char_limit
+    )
     app = create_app(answerer, host=settings.host)
 
     print(f"Chat UI available at: http://{settings.host}:{settings.port}")
+    print(f"Conversation history limit: {history_char_limit} characters")
     uvicorn.run(app, host=settings.host, port=settings.port)
 
 

@@ -10,7 +10,8 @@ from typing import Literal, Protocol
 
 from data_access.numeric import parse_locale_number
 
-_NUMERIC_SUBSTRING = re.compile(r"-?\d[\d.,]*\d|-?\d")
+# Public so `grounding.py` finds figures in an answer with exactly the same rule.
+NUMERIC_SUBSTRING = re.compile(r"-?\d[\d.,]*\d|-?\d")
 _APPROXIMATE_RELATIVE_TOLERANCE = 0.01
 
 
@@ -30,7 +31,7 @@ class NumericMatchStrategy:
         if expected_value is None:
             return "needs_review"
 
-        for match in _NUMERIC_SUBSTRING.finditer(actual_answer):
+        for match in NUMERIC_SUBSTRING.finditer(actual_answer):
             candidate = parse_locale_number(match.group())
             if candidate is None:
                 continue

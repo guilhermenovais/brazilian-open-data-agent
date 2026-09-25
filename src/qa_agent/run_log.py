@@ -1,4 +1,4 @@
-"""RunLogger: records one entry per answer_question call (FR-013).
+"""RunLogger: records one entry per answer_question or answer_turn call (FR-013).
 
 Mirrors dataset_selector/usage_log.py's SelectionLogger/JsonlSelectionLogger exactly.
 """

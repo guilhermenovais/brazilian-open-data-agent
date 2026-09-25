@@ -18,7 +18,7 @@ from starlette.responses import PlainTextResponse
 from starlette.routing import Route
 from starlette.types import ASGIApp, Receive, Scope, Send
 
-from qa_agent.answerer import QuestionAnswerer
+from qa_agent.answerer import ConversationalAnswerer
 from web_ui import chat_api, html
 
 
@@ -60,7 +60,7 @@ class HostValidationMiddleware:
         await response(scope, receive, send)
 
 
-def create_app(answerer: QuestionAnswerer, host: str) -> Starlette:
+def create_app(answerer: ConversationalAnswerer, host: str) -> Starlette:
     routes = [
         Route("/", html.serve_chat_ui, methods=["GET"]),
         Route("/{id}", html.serve_chat_ui, methods=["GET"]),

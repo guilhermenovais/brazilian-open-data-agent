@@ -7,7 +7,9 @@ where both `testset_runner` and `web_ui` can depend on it directly.
 
 `QaAgentQuestionAnswerer` is built once per run/process from a model/base-url/api-key
 target — one `AgentSettings`, one `StaticDatasetSelector`, one selection/run logger pair,
-all reused across every question; nothing here carries per-question state.
+all reused across every question; nothing here carries per-question state. It implements
+both `QuestionAnswerer` and `ConversationalAnswerer`; a conversation's history always
+arrives with each call, never stored here (008 research.md R1).
 """
 
 from pathlib import Path
@@ -18,7 +20,8 @@ from dataset_selector.locator import LocalDatasetLocator
 from dataset_selector.selector import StaticDatasetSelector
 from dataset_selector.usage_log import JsonlSelectionLogger
 
-from qa_agent.capabilities import answer_question
+from qa_agent.capabilities import answer_question, answer_turn
+from qa_agent.conversation import ConversationContext
 from qa_agent.models import QuestionAnsweringResult
 from qa_agent.run_log import JsonlRunLogger
 from qa_agent.settings import AgentSettings
@@ -34,6 +37,18 @@ class QuestionAnswerer(Protocol):
     def answer(self, question: str) -> QuestionAnsweringResult: ...
 
 
+class ConversationalAnswerer(Protocol):
+    """Answers one message of a conversation, given the earlier visible turns (008).
+
+    Two consumers (Eng. Principle 2): the web UI chat, which rebuilds `context` from the
+    browser's payload on every request, and `testset_runner`'s conversation runner, which
+    replays scripted conversations turn by turn. Kept separate from `QuestionAnswerer.answer`
+    so the standalone contract, and every existing double of it, stays untouched.
+    """
+
+    def answer_turn(self, message: str, context: ConversationContext) -> QuestionAnsweringResult: ...
+
+
 class QaAgentQuestionAnswerer:
     def __init__(
         self,
@@ -45,11 +60,13 @@ class QaAgentQuestionAnswerer:
         datasets_root: str | Path = DEFAULT_DATASETS_ROOT,
         selection_log_path: str | Path = DEFAULT_SELECTION_LOG_PATH,
         run_log_path: str | Path = DEFAULT_RUN_LOG_PATH,
+        history_char_limit: int = 16_000,
     ) -> None:
         self._settings = AgentSettings(
             model_name=model_name,
             base_url=base_url,
             api_key=api_key,
+            history_char_limit=history_char_limit,
         )
         self._selector = StaticDatasetSelector(
             briefing_source=FileBriefingSource(briefings_root),
@@ -61,6 +78,21 @@ class QaAgentQuestionAnswerer:
     def answer(self, question: str) -> QuestionAnsweringResult:
         return answer_question(
             question,
+            selector=self._selector,
+            selection_logger=self._selection_logger,
+            run_logger=self._run_logger,
+            settings=self._settings,
+        )
+
+    @property
+    def history_char_limit(self) -> int:
+        """The history limit `answer_turn` applies, so callers can record it."""
+        return self._settings.history_char_limit
+
+    def answer_turn(self, message: str, context: ConversationContext) -> QuestionAnsweringResult:
+        return answer_turn(
+            message,
+            context=context,
             selector=self._selector,
             selection_logger=self._selection_logger,
             run_logger=self._run_logger,
