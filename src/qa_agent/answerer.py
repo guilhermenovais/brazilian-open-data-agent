@@ -20,6 +20,7 @@ from dataset_selector.usage_log import JsonlSelectionLogger
 
 from qa_agent.capabilities import answer_question
 from qa_agent.models import QuestionAnsweringResult
+from qa_agent.prompt_loader import check_version
 from qa_agent.run_log import JsonlRunLogger
 from qa_agent.settings import AgentSettings
 
@@ -41,22 +42,38 @@ class QaAgentQuestionAnswerer:
         base_url: str | None = None,
         *,
         api_key: str | None = None,
+        prompt_version: str | None = None,
         briefings_root: str | Path = DEFAULT_BRIEFINGS_ROOT,
         datasets_root: str | Path = DEFAULT_DATASETS_ROOT,
         selection_log_path: str | Path = DEFAULT_SELECTION_LOG_PATH,
         run_log_path: str | Path = DEFAULT_RUN_LOG_PATH,
     ) -> None:
-        self._settings = AgentSettings(
-            model_name=model_name,
-            base_url=base_url,
-            api_key=api_key,
-        )
+        """`prompt_version=None` lets `AgentSettings` resolve it (QA_AGENT_PROMPT_VERSION,
+        then the default). An explicit unknown version raises `UnknownPromptVersionError`
+        before anything else is built."""
+        if prompt_version is None:
+            self._settings = AgentSettings(
+                model_name=model_name, base_url=base_url, api_key=api_key
+            )
+        else:
+            check_version(prompt_version)
+            self._settings = AgentSettings(
+                model_name=model_name,
+                base_url=base_url,
+                api_key=api_key,
+                prompt_version=prompt_version,
+            )
         self._selector = StaticDatasetSelector(
             briefing_source=FileBriefingSource(briefings_root),
             locator=LocalDatasetLocator(datasets_root),
         )
         self._selection_logger = JsonlSelectionLogger(selection_log_path)
         self._run_logger = JsonlRunLogger(run_log_path)
+
+    @property
+    def prompt_version(self) -> str:
+        """The prompt version this answerer actually uses."""
+        return self._settings.prompt_version
 
     def answer(self, question: str) -> QuestionAnsweringResult:
         return answer_question(

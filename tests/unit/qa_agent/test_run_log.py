@@ -55,3 +55,31 @@ def test_log_entry_contains_required_keys(tmp_path: Path) -> None:
     assert data["question"] == entry.question
     assert data["dataset_key"] == entry.dataset_key
     assert data["outcome"] == entry.outcome
+
+
+# --- 008 ------------------------------------------------------------------------------
+
+
+def test_008_us1_needs_clarification_log_entry_round_trips(tmp_path: Path) -> None:
+    log_path = tmp_path / "log.jsonl"
+    entry = AgentRunLogEntry(
+        question="Qual o valor do orçamento da AEB em 2005?",
+        dataset_key="some-key",
+        outcome="needs_clarification",
+        timestamp=datetime.now(timezone.utc),
+    )
+
+    JsonlRunLogger(log_path).log(entry)
+
+    line = log_path.read_text().splitlines()[0]
+    assert AgentRunLogEntry.model_validate_json(line) == entry
+
+
+def test_008_pre_008_log_line_still_loads() -> None:
+    line = (
+        '{"question": "Q", "dataset_key": "k", "outcome": "partial", '
+        '"timestamp": "2026-09-20T10:00:00Z"}'
+    )
+    entry = AgentRunLogEntry.model_validate_json(line)
+    assert entry.outcome == "partial"
+    assert entry.failure is None

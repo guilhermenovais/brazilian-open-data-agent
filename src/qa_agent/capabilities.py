@@ -11,7 +11,7 @@ Portuguese answer texts themselves are unchanged.
 """
 
 from datetime import datetime, timezone
-from typing import Literal, MutableSequence
+from typing import MutableSequence
 
 from pydantic import BaseModel
 from pydantic_ai.messages import ModelMessage, ToolCallPart, ToolReturnPart
@@ -34,10 +34,11 @@ from qa_agent.models import (
     AgentAnswer,
     AgentRunLogEntry,
     FailureDetail,
+    Outcome,
     QuestionAnsweringResult,
     RetrievalStep,
 )
-from qa_agent.prompt_loader import render
+from qa_agent.prompt_loader import fingerprint, render
 from qa_agent.run_log import RunLogger
 from qa_agent.settings import AgentSettings
 from qa_agent.step_budget import RETRIEVAL_STEP_LIMIT, StepBudget
@@ -100,7 +101,8 @@ def _answer_with_selection(
     if capture_deps is not None:
         capture_deps.append(deps)
     agent = build_agent(settings)
-    system_prompt = render(selection.briefing)
+    system_prompt = render(selection.briefing, settings.prompt_version)
+    briefing_fingerprint = fingerprint(selection.briefing)
 
     try:
         run_result = agent.run_sync(
@@ -115,6 +117,7 @@ def _answer_with_selection(
             run_logger=run_logger,
             errored=True,
             failure=describe_failure(exc, secrets=[settings.api_key], classify=classify),
+            briefing_fingerprint=briefing_fingerprint,
         )
 
     agent_answer: AgentAnswer = run_result.output
@@ -128,6 +131,7 @@ def _answer_with_selection(
         outcome=outcome,
         run_logger=run_logger,
         steps=steps,
+        briefing_fingerprint=briefing_fingerprint,
     )
 
 
@@ -159,8 +163,25 @@ def _extract_steps(messages: list[ModelMessage]) -> list[RetrievalStep]:
 
 
 def _clamp_outcome(
-    *, reported: Literal["full", "partial", "none"], budget: StepBudget
-) -> Literal["full", "partial", "none"]:
+    *, reported: Outcome, budget: StepBudget
+) -> Outcome:
+    """The final outcome for the model's reported one (008 data-model.md "Outcome clamp").
+
+    | reported              | successes == 0        | successes >= 1        |
+    |-----------------------|-----------------------|-----------------------|
+    | full                  | none                  | full                  |
+    | partial               | none                  | partial               |
+    | none                  | none                  | none                  |
+    | needs_clarification   | needs_clarification   | needs_clarification   |
+
+    An answer can't claim data it never retrieved, so `full`/`partial` with no successful
+    tool call become `none`. `needs_clarification` is exempt: a clarifying question makes
+    no data claim and is often correct with zero tool calls. If it leaks amounts anyway,
+    the grader's amount check catches that (008 research §2). Errored paths never reach
+    this function; they are finalized with `outcome="none"` directly.
+    """
+    if reported == "needs_clarification":
+        return reported
     if budget.successes == 0:
         return "none"
     return reported
@@ -171,11 +192,12 @@ def _finalize(
     question: str,
     dataset_key: str,
     answer: str,
-    outcome: Literal["full", "partial", "none"],
+    outcome: Outcome,
     run_logger: RunLogger,
     steps: list[RetrievalStep] | None = None,
     errored: bool = False,
     failure: FailureDetail | None = None,
+    briefing_fingerprint: str | None = None,
 ) -> QuestionAnsweringResult:
     run_logger.log(
         AgentRunLogEntry(
@@ -193,4 +215,5 @@ def _finalize(
         steps=steps or [],
         errored=errored,
         failure=failure,
+        briefing_fingerprint=briefing_fingerprint,
     )

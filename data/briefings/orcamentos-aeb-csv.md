@@ -95,6 +95,27 @@ números aparentam ser o valor cheio em reais (ex.: `42750` = R$ 42.750,00).
   (AEB e MCTIC).
 - `tb_anos.csv`: `id_ano` (PK), `data_ano` — 20 registros, anos de 2000 a 2019.
 
+## Qual medida a pergunta pede
+
+Cada registro tem quatro medidas de valor (`dotacao_atual`, `empenhado`, `liquidado`,
+`pago`). A redação da pergunta indica qual delas é pedida:
+
+| Redação na pergunta                                        | Medida          |
+|------------------------------------------------------------|-----------------|
+| "gasto", "gastou", "pago", "pagamento", "desembolso"       | `pago`          |
+| "orçamento previsto", "dotação", "autorizado"              | `dotacao_atual` |
+| "empenhado", "empenho"                                     | `empenhado`     |
+| "liquidado", "liquidação"                                  | `liquidado`     |
+
+**Redação ambígua:** "orçamento", "valor do orçamento" ou "recursos", sem qualificação,
+quando a pergunta pede um valor, não indicam nenhuma das quatro medidas. As quatro medidas
+podem diferir bastante para o mesmo recorte: para a AEB em 2005, o valor autorizado soma
+cerca de R$ 206,8 milhões e o valor pago cerca de R$ 132,0 milhões.
+
+**Perguntas de contagem:** "quantas ações tiveram execução em ANO" ou "quantas ações
+tiveram gastos em ANO" contam os registros daquele ano, quaisquer que sejam os valores das
+medidas (registros com `pago = 0` incluídos). Isso não é uma escolha de medida.
+
 ## Relacionamentos entre as tabelas
 
 ```

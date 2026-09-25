@@ -89,3 +89,31 @@ def test_a_pre_006_run_file_still_loads_with_new_fields_unrecorded(tmp_path: Pat
     assert any(r.match_status == "errored" for r in run.results)
     assert all(r.failure is None for r in run.results)
     assert run.summary.errored_by_failure_type is None
+
+
+# --- 008: backward compatibility on committed run fixtures (SC-006, SC-007) ------------
+
+SAMPLE_008_RUN = PRE_006_RUN.parent / "008-sample-run.json"
+
+
+@pytest.mark.parametrize("fixture", [SAMPLE_008_RUN, PRE_006_RUN], ids=["008-sample", "pre-006"])
+def test_008_sample_run_fixture_loads(fixture: Path) -> None:
+    run = JsonFileRunStore(fixture.parent).load(fixture)
+    assert run.results
+    assert all(r.expected_outcome is None for r in run.results)
+    assert run.target.prompt_version is None
+    assert run.briefing_fingerprints is None
+
+
+def test_008_sc007_regrade_is_unchanged() -> None:
+    """Only the real-run fixture: pre-006-run.json is hand-written, and its n=5 carries a
+    `match_status` the matcher never produced (a non-numeric `expected` is always
+    `needs_review`, before and after 008)."""
+    from testset_runner.matcher import DeterministicMatcher
+
+    run = JsonFileRunStore(SAMPLE_008_RUN.parent).load(SAMPLE_008_RUN)
+    matcher = DeterministicMatcher()
+    graded = [r for r in run.results if r.match_status != "errored"]
+    assert graded
+    for r in graded:
+        assert matcher.grade(r.expected, r.actual_answer) == r.match_status, f"n={r.n}"

@@ -50,6 +50,9 @@ def compare_runs(
         summary=summary,
         retry_policy_a=run_a.retry_policy,
         retry_policy_b=run_b.retry_policy,
+        briefing_fingerprints_a=run_a.briefing_fingerprints,
+        briefing_fingerprints_b=run_b.briefing_fingerprints,
+        briefing_fingerprints_differ=run_a.briefing_fingerprints != run_b.briefing_fingerprints,
     )
 
 

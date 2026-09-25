@@ -42,3 +42,35 @@ def test_missing_expected_field_raises_testset_load_error() -> None:
 def test_missing_file_raises_testset_load_error(tmp_path: Path) -> None:
     with pytest.raises(TestsetLoadError):
         TestsetLoader().load(tmp_path / "does-not-exist.json")
+
+
+# --- 008: expected_outcome ------------------------------------------------------------
+
+INVALID_EXPECTED_OUTCOME = FIXTURES_ROOT / "invalid-expected-outcome.json"
+BUNDLED_TESTSET = (
+    Path(__file__).parent.parent.parent.parent / "data" / "testsets" / "orcamentos-aeb-csv.json"
+)
+
+
+def test_008_invalid_expected_outcome_is_refused() -> None:
+    with pytest.raises(TestsetLoadError) as exc_info:
+        TestsetLoader().load(INVALID_EXPECTED_OUTCOME)
+    message = str(exc_info.value)
+    assert "4.expected_outcome" in message
+    assert "maybe" in message
+
+
+def test_008_expected_outcome_defaults_to_none() -> None:
+    testset = TestsetLoader().load(MINI_TESTSET)
+    assert all(q.expected_outcome is None for q in testset.questions)
+
+
+def test_008_us3_7_bundled_testset_expected_outcomes() -> None:
+    testset = TestsetLoader().load(BUNDLED_TESTSET)
+    by_n = {q.n: q.expected_outcome for q in testset.questions}
+    assert by_n[48] == "none"
+    assert by_n[49] == "needs_clarification"
+    assert by_n[50] == "none"
+    others = {n: outcome for n, outcome in by_n.items() if n not in (48, 49, 50)}
+    assert len(others) == 47
+    assert all(outcome is None for outcome in others.values())

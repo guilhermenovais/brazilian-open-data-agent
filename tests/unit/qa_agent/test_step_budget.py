@@ -41,3 +41,25 @@ def test_clamp_keeps_reported_outcome_when_at_least_one_success() -> None:
     budget.record_success()
     assert _clamp_outcome(reported="full", budget=budget) == "full"
     assert _clamp_outcome(reported="partial", budget=budget) == "partial"
+
+
+# --- 008: needs_clarification is exempt from the clamp ----------------------------------
+
+
+def test_008_us1_3_needs_clarification_is_not_downgraded_with_zero_successes() -> None:
+    budget = StepBudget(limit=10)
+    assert _clamp_outcome(reported="needs_clarification", budget=budget) == "needs_clarification"
+
+
+def test_008_us1_3_needs_clarification_kept_with_successes() -> None:
+    budget = StepBudget(limit=10)
+    budget.try_reserve()
+    budget.record_success()
+    assert _clamp_outcome(reported="needs_clarification", budget=budget) == "needs_clarification"
+
+
+def test_008_full_and_partial_still_downgraded_with_zero_successes() -> None:
+    budget = StepBudget(limit=10)
+    budget.try_reserve()
+    assert _clamp_outcome(reported="full", budget=budget) == "none"
+    assert _clamp_outcome(reported="partial", budget=budget) == "none"

@@ -18,10 +18,11 @@ def _run(monkeypatch, argv: list[str]) -> tuple[int, list[str]]:
     """
     captured: dict[str, object] = {}
 
-    def fake_answerer(model_name, base_url=None, *, api_key=None):
+    def fake_answerer(model_name, base_url=None, *, api_key=None, prompt_version=None):
         captured["model_name"] = model_name
         captured["base_url"] = base_url
         captured["api_key"] = api_key
+        captured["prompt_version"] = prompt_version
         return object()
 
     def fake_create_app(answerer, host):
@@ -129,7 +130,7 @@ def test_port_in_use_prints_a_clear_error_and_exits_1(monkeypatch, capsys) -> No
     monkeypatch.delenv("QA_WEB_HOST", raising=False)
     monkeypatch.delenv("QA_WEB_PORT", raising=False)
 
-    def fake_answerer(model_name, base_url=None, *, api_key=None):
+    def fake_answerer(model_name, base_url=None, *, api_key=None, prompt_version=None):
         return object()
 
     def fake_create_app(answerer, host):
@@ -195,3 +196,44 @@ def test_build_parser_accepts_all_contract_flags() -> None:
     assert args.api_key == "k"
     assert args.host == "0.0.0.0"
     assert args.port == 1234
+
+
+# --- 008 US4: --prompt-version ----------------------------------------------------------
+
+
+def test_008_us4_web_ui_accepts_prompt_version(monkeypatch) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "gpt-4o-mini")
+    monkeypatch.delenv("QA_AGENT_PROMPT_VERSION", raising=False)
+
+    exit_code, captured = _run(monkeypatch, ["--prompt-version", "v1"])
+
+    assert exit_code == 0
+    assert captured["prompt_version"] == "v1"
+
+
+def test_008_us4_web_ui_prompt_version_falls_back_to_env(monkeypatch) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "gpt-4o-mini")
+    monkeypatch.setenv("QA_AGENT_PROMPT_VERSION", "v1")
+
+    exit_code, captured = _run(monkeypatch, [])
+
+    assert exit_code == 0
+    assert captured["prompt_version"] == "v1"
+
+
+def test_008_us4_3_web_ui_unknown_version_fails_fast(monkeypatch, capsys) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "gpt-4o-mini")
+    monkeypatch.delenv("QA_AGENT_PROMPT_VERSION", raising=False)
+
+    def must_not_be_called(*args, **kwargs):
+        raise AssertionError("no port check or bind for an unknown prompt version")
+
+    monkeypatch.setattr(cli_module, "_port_in_use", must_not_be_called)
+    monkeypatch.setattr(cli_module.uvicorn, "run", must_not_be_called)
+    monkeypatch.setattr("sys.argv", ["web_ui", "--prompt-version", "v9"])
+
+    with pytest.raises(SystemExit) as exc_info:
+        main()
+
+    assert exc_info.value.code == 1
+    assert "Error: unknown prompt version 'v9' (available: v1, v2)." in capsys.readouterr().err

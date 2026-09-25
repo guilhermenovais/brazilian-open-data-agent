@@ -290,5 +290,121 @@ def test_compare_prints_each_runs_retry_policy_or_not_recorded(monkeypatch, caps
     lines = capsys.readouterr().out.splitlines()
     assert lines[0].startswith("Run A:")
     assert lines[1] == "  retry policy: not recorded"
-    assert lines[2].startswith("Run B:")
-    assert lines[3] == "  retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)"
+    assert lines[3].startswith("Run B:")
+    assert lines[4] == "  retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)"
+
+
+# --- 008 US4: --prompt-version and the recorded version/fingerprint ----------------------
+
+FIXTURES = Path(__file__).parent.parent.parent / "fixtures" / "testset_runner"
+
+
+def _invoke_with_version(
+    monkeypatch, tmp_path: Path, extra: list[str], *, fingerprints: list[str] | None = None
+) -> tuple[int, dict]:
+    for var in ("QA_AGENT_BASE_URL", "QA_AGENT_API_KEY", "QA_AGENT_PROMPT_VERSION"):
+        monkeypatch.delenv(var, raising=False)
+    captured: dict[str, object] = {}
+
+    def fake_run_testset(testset_path, target, *, answerer, store, **kwargs):
+        captured["target"] = target
+        return _fake_run(target).model_copy(update={"briefing_fingerprints": fingerprints})
+
+    monkeypatch.setattr(cli_module, "run_testset", fake_run_testset)
+    args = build_parser().parse_args(
+        ["run", "--testset", "t.json", "--model", "m", "--out-dir", str(tmp_path), *extra]
+    )
+    return args.func(args), captured
+
+
+def test_008_us4_1_run_defaults_to_v2(monkeypatch, tmp_path: Path) -> None:
+    exit_code, captured = _invoke_with_version(monkeypatch, tmp_path, [])
+    assert exit_code == 0
+    target = captured["target"]
+    assert isinstance(target, TargetConfiguration)
+    assert target.prompt_version == "v2"
+
+
+def test_008_us4_2_run_with_v1(monkeypatch, tmp_path: Path) -> None:
+    exit_code, captured = _invoke_with_version(monkeypatch, tmp_path, ["--prompt-version", "v1"])
+    assert exit_code == 0
+    target = captured["target"]
+    assert isinstance(target, TargetConfiguration)
+    assert target.prompt_version == "v1"
+
+
+def test_008_us4_3_unknown_version_fails_fast(monkeypatch, tmp_path: Path, capsys) -> None:
+    def loader_must_not_run(self, path):
+        raise AssertionError("the testset must not be loaded for an unknown prompt version")
+
+    monkeypatch.setattr("testset_runner.loader.TestsetLoader.load", loader_must_not_run)
+    out_dir = tmp_path / "runs"
+
+    exit_code, captured = _invoke_with_version(
+        monkeypatch, out_dir, ["--prompt-version", "v9"]
+    )
+
+    assert exit_code == 1
+    assert (
+        "Error: unknown prompt version 'v9' (available: v1, v2)." in capsys.readouterr().err
+    )
+    assert captured == {}
+    assert not out_dir.exists() or not any(out_dir.iterdir())
+
+
+@pytest.mark.parametrize(
+    "fingerprints,expected_line",
+    [
+        (["3f5a9c0d12ab" + "0" * 52], "Briefing fingerprint: 3f5a9c0d12ab"),
+        (["a" * 64, "b" * 64], f"Briefing fingerprint: {'a' * 12}, {'b' * 12}"),
+        ([], "Briefing fingerprint: none"),
+        (None, "Briefing fingerprint: not recorded"),
+    ],
+    ids=["one", "several", "empty", "not-recorded"],
+)
+def test_008_run_summary_prints_version_and_fingerprint(
+    monkeypatch, tmp_path: Path, capsys, fingerprints, expected_line: str
+) -> None:
+    _invoke_with_version(monkeypatch, tmp_path, [], fingerprints=fingerprints)
+
+    lines = capsys.readouterr().out.splitlines()
+    assert "Prompt version: v2" in lines
+    assert expected_line in lines
+
+
+def test_008_us4_4_compare_prints_not_recorded(monkeypatch, capsys) -> None:
+    pre_006 = str(FIXTURES / "pre-006-run.json")
+    args = build_parser().parse_args(["compare", pre_006, pre_006])
+
+    assert args.func(args) == 0
+
+    lines = capsys.readouterr().out.splitlines()
+    assert lines[0] == "Run A: model=pre-006-model base_url=None prompt_version=not recorded"
+    assert lines[2] == "  briefing fingerprint: not recorded"
+    assert lines[3].startswith("Run B:")
+    assert lines[3].endswith("prompt_version=not recorded")
+    assert lines[5] == "  briefing fingerprint: not recorded"
+    assert lines[6] == "Briefing fingerprints differ: no"
+
+
+def test_008_compare_prints_versions_and_fingerprints(monkeypatch, capsys) -> None:
+    comparison = RunComparison(
+        run_a=TargetConfiguration(model_name="a", prompt_version="v1"),
+        run_b=TargetConfiguration(model_name="b", prompt_version="v2"),
+        entries=[],
+        summary={},
+        briefing_fingerprints_a=["a" * 64],
+        briefing_fingerprints_b=["b" * 64],
+        briefing_fingerprints_differ=True,
+    )
+    monkeypatch.setattr(cli_module, "compare_runs", lambda a, b, *, store: comparison)
+    args = build_parser().parse_args(["compare", "a.json", "b.json"])
+
+    assert args.func(args) == 0
+
+    lines = capsys.readouterr().out.splitlines()
+    assert lines[0] == "Run A: model=a base_url=None prompt_version=v1"
+    assert lines[2] == f"  briefing fingerprint: {'a' * 12}"
+    assert lines[3] == "Run B: model=b base_url=None prompt_version=v2"
+    assert lines[5] == f"  briefing fingerprint: {'b' * 12}"
+    assert lines[6] == "Briefing fingerprints differ: yes"

@@ -5,7 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
-from qa_agent.models import FailureDetail, RetrievalStep
+from qa_agent.models import FailureDetail, Outcome, RetrievalStep
 
 MatchStatus = Literal["matched", "not_matched", "needs_review", "errored"]
 Transition = Literal[
@@ -21,6 +21,9 @@ class Question(BaseModel):
     question: str = Field(min_length=1)
     expected: str = Field(min_length=1)
     source: str
+    expected_outcome: Outcome | None = None
+    """The outcome the agent must report for this question (008). When set, grading checks
+    the outcome first (contracts/grading.md). `None` means grade on `expected` only."""
 
 
 class Testset(BaseModel):
@@ -36,6 +39,9 @@ class TargetConfiguration(BaseModel):
 
     model_name: str
     base_url: str | None = None
+    prompt_version: str | None = None
+    """The system prompt version the run used. `None` means not recorded (the run
+    predates 008)."""
 
 
 class RetryPolicy(BaseModel):
@@ -67,7 +73,10 @@ class QuestionResult(BaseModel):
     expected: str
     category: str
     actual_answer: str
-    agent_outcome: Literal["full", "partial", "none"]
+    agent_outcome: Outcome
+    expected_outcome: Outcome | None = None
+    """The outcome this result was graded against; `None` when the record had none or the
+    run predates 008."""
     dataset_key: str
     steps: list[RetrievalStep]
     match_status: MatchStatus
@@ -109,6 +118,9 @@ class TestRun(BaseModel):
     summary: RunSummary
     retry_policy: RetryPolicy | None = None
     """The retry policy the run used. `None` means a pre-006 run (not recorded)."""
+    briefing_fingerprints: list[str] | None = None
+    """Sorted distinct fingerprints of the briefings used (normally one). `[]` if every
+    question failed dataset selection. `None` means not recorded (the run predates 008)."""
 
 
 class ComparisonEntry(BaseModel):
@@ -132,3 +144,9 @@ class RunComparison(BaseModel):
     """Run A's retry policy, or `None` if not recorded. Information only: a policy
     difference never affects transitions."""
     retry_policy_b: RetryPolicy | None = None
+    briefing_fingerprints_a: list[str] | None = None
+    """Run A's briefing fingerprints, or `None` if not recorded. Information only."""
+    briefing_fingerprints_b: list[str] | None = None
+    briefing_fingerprints_differ: bool = False
+    """`briefing_fingerprints_a != briefing_fingerprints_b` (so two `None`s don't differ).
+    Never affects transitions."""

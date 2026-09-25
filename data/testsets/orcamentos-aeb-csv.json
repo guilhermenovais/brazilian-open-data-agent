@@ -333,21 +333,24 @@
     "type": "edge-cases",
     "question": "Quanto a Agência Espacial Brasileira gastou com merenda escolar em 2005?",
     "expected": "Data not available (no such action/category in the dataset)",
-    "source": "n/a"
+    "source": "n/a",
+    "expected_outcome": "none"
   },
   {
     "n": 49,
     "type": "edge-cases",
     "question": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
     "expected": "Ambiguous — expected a clarifying question (dotação atual/empenhado/liquidado/pago), not a guess",
-    "source": "n/a"
+    "source": "n/a",
+    "expected_outcome": "needs_clarification"
   },
   {
     "n": 50,
     "type": "edge-cases",
     "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2020?",
     "expected": "Data not available (no such year/record in the dataset)",
-    "source": "n/a"
+    "source": "n/a",
+    "expected_outcome": "none"
   }
 ]
 

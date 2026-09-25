@@ -109,7 +109,9 @@ def test_non_numeric_expected_values_are_always_needs_review(tmp_path: Path) -> 
     assert "/" in composite_result.expected
     assert composite_result.match_status == "needs_review"
 
-    descriptive_result = next(r for r in run.results if r.n == 48)
+    # n=47: a descriptive `expected` with no `expected_outcome` (n=48-50 carry one since
+    # 008 and are graded on the outcome instead).
+    descriptive_result = next(r for r in run.results if r.n == 47)
     assert descriptive_result.match_status == "needs_review"
 
 
@@ -259,3 +261,167 @@ def test_no_errored_questions_means_an_empty_failure_type_count(tmp_path: Path) 
     )
 
     assert run.summary.errored_by_failure_type == {}
+
+
+# --- 008 US3: grading against expected_outcome ----------------------------------------
+
+NOT_COVERED_RECORD = {
+    "n": 1,
+    "type": "edge-cases",
+    "question": "Quanto foi pago ao satélite Amazônia-1 em 2020?",
+    "expected": "Data not available (outside the dataset period)",
+    "source": "dados_gerais/tb_geral.csv",
+}
+
+
+def _write_testset(tmp_path: Path, records: list[dict]) -> Path:
+    path = tmp_path / "testset.json"
+    path.write_text(json.dumps(records, ensure_ascii=False))
+    return path
+
+
+class FixedAnswerer:
+    """Returns the same scripted `QuestionAnsweringResult` for every question."""
+
+    def __init__(self, result: QuestionAnsweringResult) -> None:
+        self._result = result
+
+    def answer(self, question: str) -> QuestionAnsweringResult:
+        return self._result
+
+
+def _fixed(outcome, *, answer: str = "Não há dados para 2020 sobre o Amazônia-1.", errored=False, fingerprint=None):
+    return FixedAnswerer(
+        QuestionAnsweringResult(
+            answer=answer,
+            dataset_key=DATASET_KEY,
+            outcome=outcome,
+            errored=errored,
+            briefing_fingerprint=fingerprint,
+        )
+    )
+
+
+def test_008_us3_expected_outcome_drives_grading(tmp_path: Path) -> None:
+    testset = _write_testset(tmp_path, [{**NOT_COVERED_RECORD, "expected_outcome": "none"}])
+    store = JsonFileRunStore(tmp_path / "runs")
+
+    run = run_testset(testset, _target(), answerer=_fixed("none"), store=store)
+    assert run.results[0].match_status == "matched"
+    assert run.results[0].expected_outcome == "none"
+
+    run = run_testset(testset, _target(), answerer=_fixed("partial"), store=store)
+    assert run.results[0].match_status == "not_matched"
+
+
+def test_008_us3_6_errored_stays_errored(tmp_path: Path) -> None:
+    testset = _write_testset(tmp_path, [{**NOT_COVERED_RECORD, "expected_outcome": "none"}])
+
+    run = run_testset(
+        testset,
+        _target(),
+        answerer=_fixed("none", answer="Não foi possível processar a pergunta.", errored=True),
+        store=JsonFileRunStore(tmp_path / "runs"),
+    )
+
+    assert run.results[0].match_status == "errored"
+
+
+def test_008_expected_outcome_recorded_as_none_when_absent(tmp_path: Path) -> None:
+    testset = _write_testset(tmp_path, [NOT_COVERED_RECORD])
+
+    run = run_testset(
+        testset, _target(), answerer=_fixed("none"), store=JsonFileRunStore(tmp_path / "runs")
+    )
+
+    assert run.results[0].expected_outcome is None
+    assert run.results[0].match_status == "needs_review"
+
+
+# --- 008 US4: prompt version and briefing fingerprints on the run -----------------------
+
+
+class SequenceAnswerer:
+    """Returns the scripted results in order, one per question."""
+
+    def __init__(self, results: list[QuestionAnsweringResult]) -> None:
+        self._results = iter(results)
+
+    def answer(self, question: str) -> QuestionAnsweringResult:
+        return next(self._results)
+
+
+def _records(count: int) -> list[dict]:
+    return [{**NOT_COVERED_RECORD, "n": n, "question": f"Pergunta {n}?"} for n in range(1, count + 1)]
+
+
+def _with_fingerprints(fingerprints: list[str | None], *, errored: bool = False) -> SequenceAnswerer:
+    return SequenceAnswerer(
+        [
+            QuestionAnsweringResult(
+                answer="Não há dados.",
+                dataset_key=DATASET_KEY if fp else UNKNOWN_DATASET_KEY,
+                outcome="none",
+                errored=errored,
+                briefing_fingerprint=fp,
+            )
+            for fp in fingerprints
+        ]
+    )
+
+
+def test_008_us4_6_run_records_sorted_distinct_fingerprints(tmp_path: Path) -> None:
+    testset = _write_testset(tmp_path, _records(4))
+
+    run = run_testset(
+        testset,
+        _target(),
+        answerer=_with_fingerprints(["b", "a", "b", None]),
+        store=JsonFileRunStore(tmp_path / "runs"),
+    )
+
+    assert run.briefing_fingerprints == ["a", "b"]
+
+
+def test_008_us4_6_same_briefing_same_fingerprint(tmp_path: Path) -> None:
+    from qa_agent.prompt_loader import fingerprint
+
+    testset = _write_testset(tmp_path, _records(2))
+    store = JsonFileRunStore(tmp_path / "runs")
+    same = fingerprint("Briefing A")
+
+    run_1 = run_testset(testset, _target(), answerer=_with_fingerprints([same, same]), store=store)
+    run_2 = run_testset(testset, _target(), answerer=_with_fingerprints([same, same]), store=store)
+    changed = fingerprint("Briefing A, editado")
+    run_3 = run_testset(testset, _target(), answerer=_with_fingerprints([changed, changed]), store=store)
+
+    assert run_1.briefing_fingerprints == run_2.briefing_fingerprints == [same]
+    assert run_3.briefing_fingerprints != run_1.briefing_fingerprints
+
+
+def test_008_all_selection_failures_give_empty_list(tmp_path: Path) -> None:
+    testset = _write_testset(tmp_path, _records(2))
+
+    run = run_testset(
+        testset,
+        _target(),
+        answerer=_with_fingerprints([None, None], errored=True),
+        store=JsonFileRunStore(tmp_path / "runs"),
+    )
+
+    assert run.briefing_fingerprints == []
+
+
+def test_008_us4_2_target_prompt_version_persisted(tmp_path: Path) -> None:
+    testset = _write_testset(tmp_path, _records(1))
+    store = JsonFileRunStore(tmp_path / "runs")
+
+    run = run_testset(
+        testset,
+        TargetConfiguration(model_name="fake", prompt_version="v1"),
+        answerer=_fixed("none"),
+        store=store,
+    )
+
+    reloaded = store.load(tmp_path / "runs" / f"{run.run_id}.json")
+    assert reloaded.target.prompt_version == "v1"

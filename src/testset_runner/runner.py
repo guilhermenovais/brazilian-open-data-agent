@@ -58,14 +58,22 @@ def run_testset(
     grader = DeterministicMatcher(matcher)
 
     results: list[QuestionResult] = []
+    fingerprints: set[str] = set()
     for question in testset.questions:
         answer_result, attempts, failed_attempts = _ask_with_retry(
             answerer, question.question, retry_policy, sleep
         )
+        if answer_result.briefing_fingerprint:
+            fingerprints.add(answer_result.briefing_fingerprint)
         if answer_result.errored:
             match_status = "errored"
         else:
-            match_status = grader.grade(question.expected, answer_result.answer)
+            match_status = grader.grade(
+                question.expected,
+                answer_result.answer,
+                expected_outcome=question.expected_outcome,
+                agent_outcome=answer_result.outcome,
+            )
         results.append(
             QuestionResult(
                 n=question.n,
@@ -74,6 +82,7 @@ def run_testset(
                 category=question.type,
                 actual_answer=answer_result.answer,
                 agent_outcome=answer_result.outcome,
+                expected_outcome=question.expected_outcome,
                 dataset_key=answer_result.dataset_key,
                 steps=answer_result.steps,
                 match_status=match_status,
@@ -92,6 +101,7 @@ def run_testset(
         results=results,
         summary=summary,
         retry_policy=retry_policy,
+        briefing_fingerprints=sorted(fingerprints),
     )
     store.save(run)
     return run

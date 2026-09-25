@@ -144,3 +144,55 @@ def test_a_pre_006_run_compares_against_a_new_run_of_the_same_testset(tmp_path: 
     assert comparison.retry_policy_a is None
     assert comparison.retry_policy_b == RetryPolicy()
     assert len(comparison.entries) == len(new.results)
+
+
+# --- 008 US4: prompt versions and briefing fingerprints in the comparison ---------------
+
+
+def _versioned(run: TestRun, version: str | None, fingerprints: list[str] | None) -> TestRun:
+    return run.model_copy(
+        update={
+            "target": TargetConfiguration(model_name="fake", prompt_version=version),
+            "briefing_fingerprints": fingerprints,
+        }
+    )
+
+
+def _compare_runs(run_a: TestRun, run_b: TestRun):
+    store = InMemoryRunStore({"a": run_a, "b": run_b})
+    return compare_runs("a", "b", store=store)
+
+
+_STATUSES_A = {1: "matched", 2: "not_matched", 3: "matched", 4: "needs_review"}
+_STATUSES_B = {1: "matched", 2: "matched", 3: "not_matched", 4: "needs_review"}
+
+
+def test_008_us4_5_comparison_shows_versions_and_fingerprints() -> None:
+    comparison = _compare_runs(
+        _versioned(_run("a", "hash1", _STATUSES_A), "v1", ["aaa"]),
+        _versioned(_run("b", "hash1", _STATUSES_B), "v2", ["bbb"]),
+    )
+
+    assert comparison.run_a.prompt_version == "v1"
+    assert comparison.run_b.prompt_version == "v2"
+    assert comparison.briefing_fingerprints_a == ["aaa"]
+    assert comparison.briefing_fingerprints_b == ["bbb"]
+    assert comparison.briefing_fingerprints_differ is True
+
+
+def test_008_us4_5_transitions_unchanged() -> None:
+    plain = _compare_runs(_run("a", "hash1", _STATUSES_A), _run("b", "hash1", _STATUSES_B))
+    versioned = _compare_runs(
+        _versioned(_run("a", "hash1", _STATUSES_A), "v1", ["aaa"]),
+        _versioned(_run("b", "hash1", _STATUSES_B), "v2", ["bbb"]),
+    )
+
+    assert versioned.entries == plain.entries
+    assert versioned.summary == plain.summary
+
+
+def test_008_both_none_fingerprints_do_not_differ() -> None:
+    comparison = _compare_runs(_run("a", "hash1", _STATUSES_A), _run("b", "hash1", _STATUSES_B))
+    assert comparison.briefing_fingerprints_a is None
+    assert comparison.briefing_fingerprints_b is None
+    assert comparison.briefing_fingerprints_differ is False

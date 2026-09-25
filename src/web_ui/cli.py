@@ -16,6 +16,7 @@ import sys
 import uvicorn
 
 from qa_agent.answerer import QaAgentQuestionAnswerer
+from qa_agent.exceptions import UnknownPromptVersionError
 from web_ui.app import create_app
 from web_ui.settings import WebServerSettings
 
@@ -25,6 +26,7 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--model")
     parser.add_argument("--base-url")
     parser.add_argument("--api-key")
+    parser.add_argument("--prompt-version")
     parser.add_argument("--host")
     parser.add_argument("--port", type=int)
     return parser
@@ -54,6 +56,16 @@ def main() -> None:
         sys.exit(1)
     base_url = args.base_url or os.environ.get("QA_AGENT_BASE_URL")
     api_key = args.api_key or os.environ.get("QA_AGENT_API_KEY")
+    prompt_version = args.prompt_version or os.environ.get("QA_AGENT_PROMPT_VERSION")
+
+    # Built before the port check, so an unknown prompt version fails before any bind.
+    try:
+        answerer = QaAgentQuestionAnswerer(
+            model, base_url, api_key=api_key, prompt_version=prompt_version
+        )
+    except UnknownPromptVersionError as exc:
+        print(f"Error: {exc}.", file=sys.stderr)
+        sys.exit(1)
 
     # Only the flags actually passed are forwarded — `WebServerSettings`'s own
     # env-then-default resolution (pydantic-settings) governs anything left unset,
@@ -71,7 +83,6 @@ def main() -> None:
         print(f"Error: {settings.host}:{settings.port} is already in use.", file=sys.stderr)
         sys.exit(1)
 
-    answerer = QaAgentQuestionAnswerer(model, base_url, api_key=api_key)
     app = create_app(answerer, host=settings.host)
 
     print(f"Chat UI available at: http://{settings.host}:{settings.port}")

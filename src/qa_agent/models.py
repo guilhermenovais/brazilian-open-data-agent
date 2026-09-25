@@ -5,12 +5,29 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+# The agent's own classification of its answer (008 data-model.md):
+#   full                — answered in full from queried data;
+#   partial             — part answered, the rest declared as not covered;
+#   none                — nothing answered: not covered, no match, or a processing failure;
+#   needs_clarification — several readings with different amounts; the answer is a
+#                         clarifying question with no dataset values.
+Outcome = Literal["full", "partial", "none", "needs_clarification"]
+
 
 class AgentAnswer(BaseModel):
     """The `Agent`'s structured `output_type` — the model's own final turn."""
 
     answer: str = Field(min_length=1)
-    outcome: Literal["full", "partial", "none"]
+    outcome: Outcome = Field(
+        description=(
+            "Classificação do próprio resultado. "
+            "full: a pergunta foi totalmente respondida com dados consultados; "
+            "partial: parte da pergunta foi respondida e o que falta foi declarado; "
+            "none: não foi possível responder (dados não cobrem a pergunta ou nada corresponde); "
+            "needs_clarification: a pergunta tem mais de uma leitura com valores diferentes; "
+            "a resposta é uma pergunta de esclarecimento sem valores."
+        )
+    )
 
 
 class RetrievalStep(BaseModel):
@@ -46,10 +63,16 @@ class QuestionAnsweringResult(BaseModel):
 
     answer: str
     dataset_key: str
-    outcome: Literal["full", "partial", "none"]
+    outcome: Outcome
     steps: list[RetrievalStep] = []
     errored: bool = False
     failure: FailureDetail | None = None
+    briefing_fingerprint: str | None = Field(
+        default=None,
+        description=(
+            "SHA-256 hex of the dataset briefing used; None when dataset selection failed"
+        ),
+    )
 
 
 class AgentRunLogEntry(BaseModel):
@@ -57,6 +80,6 @@ class AgentRunLogEntry(BaseModel):
 
     question: str
     dataset_key: str
-    outcome: Literal["full", "partial", "none"]
+    outcome: Outcome
     timestamp: datetime
     failure: FailureDetail | None = None

@@ -6,7 +6,9 @@ re-exporting an environment variable between them (US3).
 
 `run` flags: `--testset`, `--model` (QA_AGENT_MODEL), `--base-url` (QA_AGENT_BASE_URL),
 `--api-key` (QA_AGENT_API_KEY), `--max-attempts` (QA_AGENT_MAX_ATTEMPTS, default 3 — the
-attempts per question, 1 disables retries; 006 contracts/cli.md), `--out-dir`.
+attempts per question, 1 disables retries; 006 contracts/cli.md), `--prompt-version`
+(QA_AGENT_PROMPT_VERSION, default v2; 008 contracts/prompt-version-and-run-record.md),
+`--out-dir`.
 """
 
 import argparse
@@ -14,6 +16,7 @@ import os
 import sys
 
 from qa_agent.answerer import QaAgentQuestionAnswerer
+from qa_agent.exceptions import UnknownPromptVersionError
 from testset_runner.comparator import compare_runs
 from testset_runner.exceptions import IncompatibleRunsError, RunLoadError, TestsetLoadError
 from testset_runner.models import RetryPolicy, TargetConfiguration
@@ -35,9 +38,19 @@ def _run(args: argparse.Namespace) -> int:
         print("Error: --max-attempts must be an integer >= 1.", file=sys.stderr)
         return 1
     retry_policy = RetryPolicy(max_attempts=max_attempts)
+    prompt_version = args.prompt_version or os.environ.get("QA_AGENT_PROMPT_VERSION")
 
-    target = TargetConfiguration(model_name=model, base_url=base_url)
-    answerer = QaAgentQuestionAnswerer(target.model_name, target.base_url, api_key=api_key)
+    # Built before the testset is loaded, so an unknown prompt version fails fast.
+    try:
+        answerer = QaAgentQuestionAnswerer(
+            model, base_url, api_key=api_key, prompt_version=prompt_version
+        )
+    except UnknownPromptVersionError as exc:
+        print(f"Error: {exc}.", file=sys.stderr)
+        return 1
+    target = TargetConfiguration(
+        model_name=model, base_url=base_url, prompt_version=answerer.prompt_version
+    )
     store = JsonFileRunStore(args.out_dir)
 
     try:
@@ -64,6 +77,8 @@ def _run(args: argparse.Namespace) -> int:
             f"  {category}: {cat_summary.match_rate:.1%} "
             f"({cat_summary.total_questions} questions)"
         )
+    print(f"Prompt version: {_or_not_recorded(run.target.prompt_version)}")
+    print(f"Briefing fingerprint: {_describe_fingerprints(run.briefing_fingerprints)}")
     print(f"Retry policy: {_describe_policy(run.retry_policy)}")
     print(f"Questions retried: {_or_not_recorded(run.summary.retried_questions)}")
     print(
@@ -103,6 +118,18 @@ def _or_not_recorded(value: object | None) -> str:
     return "not recorded" if value is None else str(value)
 
 
+_FINGERPRINT_DISPLAY_LENGTH = 12
+
+
+def _describe_fingerprints(fingerprints: list[str] | None) -> str:
+    """The first 12 hex characters of each, comma-separated; `none` for an empty list."""
+    if fingerprints is None:
+        return "not recorded"
+    if not fingerprints:
+        return "none"
+    return ", ".join(fp[:_FINGERPRINT_DISPLAY_LENGTH] for fp in fingerprints)
+
+
 def _by_count(counts: dict[str, int]) -> list[tuple[str, int]]:
     """Count descending, then type name — the order every failure-type listing uses."""
     return sorted(counts.items(), key=lambda item: (-item[1], item[0]))
@@ -124,14 +151,18 @@ def _compare(args: argparse.Namespace) -> int:
         print(f"Error: the two runs are not comparable — {exc}", file=sys.stderr)
         return 1
 
-    print(
-        f"Run A: model={comparison.run_a.model_name} base_url={comparison.run_a.base_url}"
-    )
-    print(f"  retry policy: {_describe_policy(comparison.retry_policy_a)}")
-    print(
-        f"Run B: model={comparison.run_b.model_name} base_url={comparison.run_b.base_url}"
-    )
-    print(f"  retry policy: {_describe_policy(comparison.retry_policy_b)}")
+    for label, target, policy, fingerprints in (
+        ("A", comparison.run_a, comparison.retry_policy_a, comparison.briefing_fingerprints_a),
+        ("B", comparison.run_b, comparison.retry_policy_b, comparison.briefing_fingerprints_b),
+    ):
+        print(
+            f"Run {label}: model={target.model_name} base_url={target.base_url} "
+            f"prompt_version={_or_not_recorded(target.prompt_version)}"
+        )
+        print(f"  retry policy: {_describe_policy(policy)}")
+        print(f"  briefing fingerprint: {_describe_fingerprints(fingerprints)}")
+    differ = "yes" if comparison.briefing_fingerprints_differ else "no"
+    print(f"Briefing fingerprints differ: {differ}")
     print()
     for transition, count in sorted(comparison.summary.items()):
         print(f"  {transition}: {count}")
@@ -152,6 +183,7 @@ def build_parser() -> argparse.ArgumentParser:
     run_parser.add_argument("--base-url")
     run_parser.add_argument("--api-key")
     run_parser.add_argument("--max-attempts")
+    run_parser.add_argument("--prompt-version")
     run_parser.add_argument("--out-dir", default="data/testset_runs")
     run_parser.set_defaults(func=_run)
 
