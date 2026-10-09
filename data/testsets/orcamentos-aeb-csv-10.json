@@ -44,7 +44,7 @@
   {
     "n": 7,
     "type": "calculation",
-    "question": "Quanto a Agência Espacial Brasileira pagou ao todo, somando todos os anos disponíveis?",
+    "question": "Quanto foi pago ao todo nos registros cuja unidade é a Agência Espacial Brasileira, somando todos os anos disponíveis?",
     "expected": "1037017199",
     "source": "dados_gerais/tb_geral.csv"
   },
@@ -67,6 +67,7 @@
     "type": "edge-cases",
     "question": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
     "expected": "Ambiguous — expected a clarifying question (dotação atual/empenhado/liquidado/pago), not a guess",
-    "source": "n/a"
+    "source": "n/a",
+    "expected_outcome": "needs_clarification"
   }
 ]

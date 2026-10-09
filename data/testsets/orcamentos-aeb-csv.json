@@ -191,14 +191,14 @@
   {
     "n": 28,
     "type": "calculation",
-    "question": "Quantas ações orçamentárias tiveram execução em 2006?",
+    "question": "Quantos registros de ações orçamentárias existem no orçamento de 2006?",
     "expected": "31",
     "source": "dados_gerais/tb_geral.csv"
   },
   {
     "n": 29,
     "type": "calculation",
-    "question": "Quantas ações orçamentárias diferentes tiveram gastos em 2008?",
+    "question": "Quantas ações orçamentárias diferentes constam no orçamento de 2008?",
     "expected": "31",
     "source": "dados_gerais/tb_geral.csv"
   },
@@ -247,7 +247,7 @@
   {
     "n": 36,
     "type": "calculation",
-    "question": "Quanto a Agência Espacial Brasileira pagou ao todo, somando todos os anos disponíveis?",
+    "question": "Quanto foi pago ao todo nos registros cuja unidade é a Agência Espacial Brasileira, somando todos os anos disponíveis?",
     "expected": "1037017199",
     "source": "dados_gerais/tb_geral.csv"
   },
@@ -323,7 +323,7 @@
   },
   {
     "n": 47,
-    "type": "multiple-files",
+    "type": "single-lookup",
     "question": "O que significa 'empenhado' na execução de um orçamento público?",
     "expected": "Valor disponível para a realização da ação",
     "source": "metadados/metadados.csv"
