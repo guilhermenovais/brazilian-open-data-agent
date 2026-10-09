@@ -1,0 +1,2 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+path=/home/guilherme/.cache/huggingface/hub/models--RedHatAI--granite-3.1-8b-instruct-quantized.w4a16/snapshots/1ebadb0303c6638d5dd0c40073cf76d811d264ed

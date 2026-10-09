@@ -1,0 +1,1852 @@
+{
+  "run_id": "20261009T105300579504Z",
+  "created_at": "2026-10-09T10:53:00.579516Z",
+  "testset": {
+    "path": "data/testsets/orcamentos-aeb-csv.json",
+    "content_hash": "fa66647eac5339a655da3964b8dcf5060d802d662948ed2d78c51ae4ee6f466f",
+    "questions": [
+      {
+        "n": 1,
+        "type": "single-lookup",
+        "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+        "expected": "8351",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 2,
+        "type": "single-lookup",
+        "question": "Quanto foi empenhado para o auxílio-transporte dos servidores da Agência Espacial Brasileira em 2000?",
+        "expected": "25461",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 3,
+        "type": "single-lookup",
+        "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+        "expected": "65000",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 4,
+        "type": "single-lookup",
+        "question": "Qual foi o valor liquidado para o desenvolvimento de foguetes de sondagem em 2001?",
+        "expected": "1462958",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 5,
+        "type": "single-lookup",
+        "question": "Quanto foi pago em pensões para servidores civis em 2001?",
+        "expected": "14938",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 6,
+        "type": "single-lookup",
+        "question": "Quanto foi gasto com pagamento de aposentadorias e pensões de servidores civis em 2002?",
+        "expected": "15014",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 7,
+        "type": "single-lookup",
+        "question": "Quanto a Agência Espacial Brasileira gastou com informática em 2002?",
+        "expected": "39290",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 8,
+        "type": "single-lookup",
+        "question": "Quanto foi empenhado com comunicação de governo em 2002?",
+        "expected": "50000",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 9,
+        "type": "single-lookup",
+        "question": "Qual foi o orçamento previsto para o desenvolvimento de veículos lançadores de satélites em 2003?",
+        "expected": "10672818",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 10,
+        "type": "single-lookup",
+        "question": "Quanto foi pago com a formação de astronautas em 2003?",
+        "expected": "745857",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 11,
+        "type": "single-lookup",
+        "question": "Quanto foi pago para obras de complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+        "expected": "11779411",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 12,
+        "type": "single-lookup",
+        "question": "Quanto foi empenhado com a participação brasileira na Estação Espacial Internacional em 2005?",
+        "expected": "5626000",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 13,
+        "type": "single-lookup",
+        "question": "Qual foi o valor liquidado com aposentadorias e pensões de servidores civis em 2006?",
+        "expected": "65869",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 14,
+        "type": "single-lookup",
+        "question": "Quanto foi pago pelo desenvolvimento de satélites de sensoriamento remoto com imageador óptico em 2006?",
+        "expected": "9093355",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 15,
+        "type": "single-lookup",
+        "question": "Quanto foi pago pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+        "expected": "40010834",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 16,
+        "type": "single-lookup",
+        "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2009?",
+        "expected": "28931584",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 17,
+        "type": "single-lookup",
+        "question": "Qual foi a dotação para o auxílio-alimentação dos servidores em 2007?",
+        "expected": "104970",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 18,
+        "type": "single-lookup",
+        "question": "Qual foi o valor liquidado no desenvolvimento do satélite Lattes em 2009?",
+        "expected": "2272748",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 19,
+        "type": "single-lookup",
+        "question": "Quanto foi empenhado em pesquisa de ciência espacial em 2008?",
+        "expected": "2099647",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 20,
+        "type": "single-lookup",
+        "question": "Quanto foi pago com a capacitação de especialistas do setor espacial em 2009?",
+        "expected": "40390",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 21,
+        "type": "calculation",
+        "question": "Qual foi o orçamento total (dotação) do ano de 2002?",
+        "expected": "23992773",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 22,
+        "type": "calculation",
+        "question": "Quanto foi pago no total durante o ano de 2002?",
+        "expected": "18245931",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 23,
+        "type": "calculation",
+        "question": "Quanto foi empenhado ao todo em 2005?",
+        "expected": "205868524",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 24,
+        "type": "calculation",
+        "question": "Qual foi o valor total liquidado em 2007?",
+        "expected": "100441734",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 25,
+        "type": "calculation",
+        "question": "Qual foi o orçamento total (dotação) do ano de 2010?",
+        "expected": "287184731",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 26,
+        "type": "calculation",
+        "question": "Quanto foi pago no total durante o ano de 2015?",
+        "expected": "58078604",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 27,
+        "type": "calculation",
+        "question": "Quanto foi pago no total durante o ano de 2019?",
+        "expected": "100585421",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 28,
+        "type": "calculation",
+        "question": "Quantos registros de ações orçamentárias existem no orçamento de 2006?",
+        "expected": "31",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 29,
+        "type": "calculation",
+        "question": "Quantas ações orçamentárias diferentes constam no orçamento de 2008?",
+        "expected": "31",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 30,
+        "type": "calculation",
+        "question": "Qual foi o valor médio pago por ação orçamentária em 2012?",
+        "expected": "~3675300.51",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 31,
+        "type": "calculation",
+        "question": "Qual foi o valor médio empenhado por ação orçamentária em 2009?",
+        "expected": "~9898319.48",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 32,
+        "type": "calculation",
+        "question": "Qual foi a ação que recebeu o maior valor pago em 2005, e quanto foi pago?",
+        "expected": "Participação Brasileira no Desenvolvimento do Satélite Sino-Brasileiro - Projeto CBERS (46219753)",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 33,
+        "type": "calculation",
+        "question": "Qual ação teve a maior dotação orçamentária em 2008, e qual foi o valor?",
+        "expected": "Desenvolvimento do Satélite Sino-Brasileiro - Projeto CBERS-3 (47280786)",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 34,
+        "type": "calculation",
+        "question": "Qual foi a ação com o maior valor pago em 2014, e quanto foi pago?",
+        "expected": "Desenvolvimento e Lançamento de Satélites (44332792)",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 35,
+        "type": "calculation",
+        "question": "Quanto foi gasto (pago) com a previdência de inativos e pensionistas da União entre 2010 e 2015?",
+        "expected": "1148602",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 36,
+        "type": "calculation",
+        "question": "Quanto foi pago ao todo nos registros cuja unidade é a Agência Espacial Brasileira, somando todos os anos disponíveis?",
+        "expected": "1037017199",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 37,
+        "type": "calculation",
+        "question": "Em quantos anos diferentes o programa espacial (Pnae) teve execução orçamentária registrada?",
+        "expected": "12",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 38,
+        "type": "multiple-files",
+        "question": "A que programa pertence a ação de desenvolvimento de veículos lançadores de satélites em 2000?",
+        "expected": "Nacional de Atividades Espaciais - Pnae",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 39,
+        "type": "multiple-files",
+        "question": "A que programa pertence a manutenção de serviços de transportes da Agência Espacial Brasileira em 2002?",
+        "expected": "Apoio Administrativo",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 40,
+        "type": "multiple-files",
+        "question": "A que programa está vinculado o desenvolvimento e lançamento de foguetes de sondagem em 2004?",
+        "expected": "Nacional de Atividades Espaciais - Pnae",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 41,
+        "type": "multiple-files",
+        "question": "A que programa pertence a assistência pré-escolar aos dependentes dos servidores em 2011?",
+        "expected": "Nacional de Atividades Espaciais - Pnae",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_programas.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 42,
+        "type": "multiple-files",
+        "question": "Qual unidade executou a ação de regulamentações, licenças e certificações espaciais em 2000?",
+        "expected": "Agência Espacial Brasileira",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 43,
+        "type": "multiple-files",
+        "question": "Qual unidade foi responsável pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+        "expected": "Agência Espacial Brasileira",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 44,
+        "type": "multiple-files",
+        "question": "Qual unidade executou o desenvolvimento do satélite Amazônia-1 em 2010?",
+        "expected": "Agência Espacial Brasileira",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 45,
+        "type": "multiple-files",
+        "question": "Qual foi a unidade responsável, o programa e o valor pago pelas ações de informática em 2000?",
+        "expected": "Agência Espacial Brasileira / Apoio Administrativo / 238959",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv + tb_programas.csv + tb_acoes.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 46,
+        "type": "multiple-files",
+        "question": "Qual unidade, programa e valor pago estão associados à complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+        "expected": "Agência Espacial Brasileira / Nacional de Atividades Espaciais - Pnae / 11779411",
+        "source": "dados_normalizados/tb_orcamentos.csv + tb_unidades_orcamentarias.csv + tb_programas.csv + tb_acoes.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 47,
+        "type": "single-lookup",
+        "question": "O que significa 'empenhado' na execução de um orçamento público?",
+        "expected": "Valor disponível para a realização da ação",
+        "source": "metadados/metadados.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 48,
+        "type": "edge-cases",
+        "question": "Quanto a Agência Espacial Brasileira gastou com merenda escolar em 2005?",
+        "expected": "Data not available (no such action/category in the dataset)",
+        "source": "n/a",
+        "expected_outcome": "none"
+      },
+      {
+        "n": 49,
+        "type": "edge-cases",
+        "question": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
+        "expected": "Ambiguous — expected a clarifying question (dotação atual/empenhado/liquidado/pago), not a guess",
+        "source": "n/a",
+        "expected_outcome": "needs_clarification"
+      },
+      {
+        "n": 50,
+        "type": "edge-cases",
+        "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2020?",
+        "expected": "Data not available (no such year/record in the dataset)",
+        "source": "n/a",
+        "expected_outcome": "none"
+      }
+    ]
+  },
+  "target": {
+    "model_name": "ministral-8b",
+    "base_url": "http://localhost:8000/v1",
+    "prompt_version": "v2"
+  },
+  "results": [
+    {
+      "n": 1,
+      "question": "Quanto foi pago aos dependentes dos servidores para assistência pré-escolar em 2000?",
+      "expected": "8351",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 2,
+      "question": "Quanto foi empenhado para o auxílio-transporte dos servidores da Agência Espacial Brasileira em 2000?",
+      "expected": "25461",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 3,
+      "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+      "expected": "65000",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 4,
+      "question": "Qual foi o valor liquidado para o desenvolvimento de foguetes de sondagem em 2001?",
+      "expected": "1462958",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 5,
+      "question": "Quanto foi pago em pensões para servidores civis em 2001?",
+      "expected": "14938",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 6,
+      "question": "Quanto foi gasto com pagamento de aposentadorias e pensões de servidores civis em 2002?",
+      "expected": "15014",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 7,
+      "question": "Quanto a Agência Espacial Brasileira gastou com informática em 2002?",
+      "expected": "39290",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 8,
+      "question": "Quanto foi empenhado com comunicação de governo em 2002?",
+      "expected": "50000",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 9,
+      "question": "Qual foi o orçamento previsto para o desenvolvimento de veículos lançadores de satélites em 2003?",
+      "expected": "10672818",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 10,
+      "question": "Quanto foi pago com a formação de astronautas em 2003?",
+      "expected": "745857",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 11,
+      "question": "Quanto foi pago para obras de complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+      "expected": "11779411",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 12,
+      "question": "Quanto foi empenhado com a participação brasileira na Estação Espacial Internacional em 2005?",
+      "expected": "5626000",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 13,
+      "question": "Qual foi o valor liquidado com aposentadorias e pensões de servidores civis em 2006?",
+      "expected": "65869",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 14,
+      "question": "Quanto foi pago pelo desenvolvimento de satélites de sensoriamento remoto com imageador óptico em 2006?",
+      "expected": "9093355",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 15,
+      "question": "Quanto foi pago pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+      "expected": "40010834",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 16,
+      "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2009?",
+      "expected": "28931584",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 17,
+      "question": "Qual foi a dotação para o auxílio-alimentação dos servidores em 2007?",
+      "expected": "104970",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 18,
+      "question": "Qual foi o valor liquidado no desenvolvimento do satélite Lattes em 2009?",
+      "expected": "2272748",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 19,
+      "question": "Quanto foi empenhado em pesquisa de ciência espacial em 2008?",
+      "expected": "2099647",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 20,
+      "question": "Quanto foi pago com a capacitação de especialistas do setor espacial em 2009?",
+      "expected": "40390",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 21,
+      "question": "Qual foi o orçamento total (dotação) do ano de 2002?",
+      "expected": "23992773",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 22,
+      "question": "Quanto foi pago no total durante o ano de 2002?",
+      "expected": "18245931",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 23,
+      "question": "Quanto foi empenhado ao todo em 2005?",
+      "expected": "205868524",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 24,
+      "question": "Qual foi o valor total liquidado em 2007?",
+      "expected": "100441734",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 25,
+      "question": "Qual foi o orçamento total (dotação) do ano de 2010?",
+      "expected": "287184731",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 26,
+      "question": "Quanto foi pago no total durante o ano de 2015?",
+      "expected": "58078604",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 27,
+      "question": "Quanto foi pago no total durante o ano de 2019?",
+      "expected": "100585421",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 28,
+      "question": "Quantos registros de ações orçamentárias existem no orçamento de 2006?",
+      "expected": "31",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 29,
+      "question": "Quantas ações orçamentárias diferentes constam no orçamento de 2008?",
+      "expected": "31",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 30,
+      "question": "Qual foi o valor médio pago por ação orçamentária em 2012?",
+      "expected": "~3675300.51",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 31,
+      "question": "Qual foi o valor médio empenhado por ação orçamentária em 2009?",
+      "expected": "~9898319.48",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 32,
+      "question": "Qual foi a ação que recebeu o maior valor pago em 2005, e quanto foi pago?",
+      "expected": "Participação Brasileira no Desenvolvimento do Satélite Sino-Brasileiro - Projeto CBERS (46219753)",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 33,
+      "question": "Qual ação teve a maior dotação orçamentária em 2008, e qual foi o valor?",
+      "expected": "Desenvolvimento do Satélite Sino-Brasileiro - Projeto CBERS-3 (47280786)",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 34,
+      "question": "Qual foi a ação com o maior valor pago em 2014, e quanto foi pago?",
+      "expected": "Desenvolvimento e Lançamento de Satélites (44332792)",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 35,
+      "question": "Quanto foi gasto (pago) com a previdência de inativos e pensionistas da União entre 2010 e 2015?",
+      "expected": "1148602",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 36,
+      "question": "Quanto foi pago ao todo nos registros cuja unidade é a Agência Espacial Brasileira, somando todos os anos disponíveis?",
+      "expected": "1037017199",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 37,
+      "question": "Em quantos anos diferentes o programa espacial (Pnae) teve execução orçamentária registrada?",
+      "expected": "12",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 38,
+      "question": "A que programa pertence a ação de desenvolvimento de veículos lançadores de satélites em 2000?",
+      "expected": "Nacional de Atividades Espaciais - Pnae",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 39,
+      "question": "A que programa pertence a manutenção de serviços de transportes da Agência Espacial Brasileira em 2002?",
+      "expected": "Apoio Administrativo",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 40,
+      "question": "A que programa está vinculado o desenvolvimento e lançamento de foguetes de sondagem em 2004?",
+      "expected": "Nacional de Atividades Espaciais - Pnae",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 41,
+      "question": "A que programa pertence a assistência pré-escolar aos dependentes dos servidores em 2011?",
+      "expected": "Nacional de Atividades Espaciais - Pnae",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 42,
+      "question": "Qual unidade executou a ação de regulamentações, licenças e certificações espaciais em 2000?",
+      "expected": "Agência Espacial Brasileira",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 43,
+      "question": "Qual unidade foi responsável pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+      "expected": "Agência Espacial Brasileira",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 44,
+      "question": "Qual unidade executou o desenvolvimento do satélite Amazônia-1 em 2010?",
+      "expected": "Agência Espacial Brasileira",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 45,
+      "question": "Qual foi a unidade responsável, o programa e o valor pago pelas ações de informática em 2000?",
+      "expected": "Agência Espacial Brasileira / Apoio Administrativo / 238959",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 46,
+      "question": "Qual unidade, programa e valor pago estão associados à complementação da infraestrutura do Centro de Lançamento de Alcântara em 2005?",
+      "expected": "Agência Espacial Brasileira / Nacional de Atividades Espaciais - Pnae / 11779411",
+      "category": "multiple-files",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 47,
+      "question": "O que significa 'empenhado' na execução de um orçamento público?",
+      "expected": "Valor disponível para a realização da ação",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 48,
+      "question": "Quanto a Agência Espacial Brasileira gastou com merenda escolar em 2005?",
+      "expected": "Data not available (no such action/category in the dataset)",
+      "category": "edge-cases",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": "none",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 49,
+      "question": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
+      "expected": "Ambiguous — expected a clarifying question (dotação atual/empenhado/liquidado/pago), not a guess",
+      "category": "edge-cases",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": "needs_clarification",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 50,
+      "question": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2020?",
+      "expected": "Data not available (no such year/record in the dataset)",
+      "category": "edge-cases",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": "none",
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"Grammar error: Pointer '/$defs/EqualsCondition' does not e[REDACTED]ist\", 'type': 'BadRequestError', 'param': None, 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    }
+  ],
+  "summary": {
+    "total_questions": 50,
+    "match_rate": 0.0,
+    "by_status": {
+      "errored": 50
+    },
+    "by_category": {
+      "calculation": {
+        "total_questions": 17,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 17
+        },
+        "by_category": {},
+        "target_unreachable": false,
+        "errored_by_failure_type": {
+          "BadRequestError": 17
+        },
+        "retried_questions": 0,
+        "errored_after_retries": 0
+      },
+      "edge-cases": {
+        "total_questions": 3,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 3
+        },
+        "by_category": {},
+        "target_unreachable": false,
+        "errored_by_failure_type": {
+          "BadRequestError": 3
+        },
+        "retried_questions": 0,
+        "errored_after_retries": 0
+      },
+      "multiple-files": {
+        "total_questions": 9,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 9
+        },
+        "by_category": {},
+        "target_unreachable": false,
+        "errored_by_failure_type": {
+          "BadRequestError": 9
+        },
+        "retried_questions": 0,
+        "errored_after_retries": 0
+      },
+      "single-lookup": {
+        "total_questions": 21,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 21
+        },
+        "by_category": {},
+        "target_unreachable": false,
+        "errored_by_failure_type": {
+          "BadRequestError": 21
+        },
+        "retried_questions": 0,
+        "errored_after_retries": 0
+      }
+    },
+    "target_unreachable": true,
+    "errored_by_failure_type": {
+      "BadRequestError": 50
+    },
+    "retried_questions": 0,
+    "errored_after_retries": 0
+  },
+  "retry_policy": {
+    "max_attempts": 3,
+    "initial_wait_seconds": 2.0,
+    "backoff_multiplier": 2.0,
+    "max_wait_seconds": 60.0
+  },
+  "briefing_fingerprints": [
+    "4f2597d6ed811d6f2f30787aaf7a7f7b894ac82cbf261483fa2a03bffd730710"
+  ],
+  "text_matching": {
+    "value_list_threshold": 30,
+    "max_suggestions": 5,
+    "stopwords": "pt_v1"
+  }
+}

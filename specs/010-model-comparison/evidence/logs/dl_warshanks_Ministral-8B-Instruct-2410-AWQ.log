@@ -1,0 +1,108 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Traceback (most recent call last):
+  File "/home/guilherme/llm/./venv/bin/hf", line 8, in <module>
+    sys.exit(main())
+             ~~~~^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/cli/hf.py", line 133, in main
+    app()
+    ~~~^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/click/core.py", line 1631, in __call__
+    return self.main(*args, **kwargs)
+           ~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/click/core.py", line 1552, in main
+    rv = self.invoke(ctx)
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/cli/_cli_utils.py", line 131, in invoke
+    return super().invoke(ctx)
+           ~~~~~~~~~~~~~~^^^^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/click/core.py", line 2032, in invoke
+    return _process_result(sub_ctx.command.invoke(sub_ctx))
+                           ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/click/core.py", line 1415, in invoke
+    return ctx.invoke(self.callback, **ctx.params)
+           ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/click/core.py", line 910, in invoke
+    return callback(*args, **kwargs)
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/cli/_framework.py", line 365, in handler
+    return func(**call_kwargs)
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/cli/download.py", line 228, in download
+    _print_result(run_download())
+                  ~~~~~~~~~~~~^^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/cli/download.py", line 187, in run_download
+    return snapshot_download(
+        repo_id=repo_id,
+    ...<10 lines>...
+        dry_run=dry_run,
+    )
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/_snapshot_download.py", line 529, in snapshot_download
+    hf_thread_map(
+    ~~~~~~~~~~~~~^
+        _inner_hf_hub_download,
+        ^^^^^^^^^^^^^^^^^^^^^^^
+    ...<3 lines>...
+        tqdm_class=tqdm_class,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/utils/tqdm.py", line 441, in hf_thread_map
+    results[future_to_index[future]] = future.result()
+                                       ~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 443, in result
+    return self.__get_result()
+           ~~~~~~~~~~~~~~~~~^^
+  File "/usr/lib/python3.14/concurrent/futures/_base.py", line 395, in __get_result
+    raise self._exception
+  File "/usr/lib/python3.14/concurrent/futures/thread.py", line 86, in run
+    result = ctx.run(self.task)
+  File "/usr/lib/python3.14/concurrent/futures/thread.py", line 73, in run
+    return fn(*args, **kwargs)
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/_snapshot_download.py", line 509, in _inner_hf_hub_download
+    hf_hub_download(  # type: ignore
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+        repo_id,
+        ^^^^^^^^
+    ...<14 lines>...
+        dry_run=dry_run,
+        ^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/utils/_validators.py", line 88, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/file_download.py", line 1035, in hf_hub_download
+    return _hf_hub_download_to_cache_dir(
+        # Destination
+    ...<15 lines>...
+        dry_run=dry_run,
+    )
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/file_download.py", line 1257, in _hf_hub_download_to_cache_dir
+    _download_to_tmp_and_move(
+    ~~~~~~~~~~~~~~~~~~~~~~~~~^
+        incomplete_path=Path(blob_path + ".incomplete"),
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<8 lines>...
+        tqdm_class=tqdm_class,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/file_download.py", line 1980, in _download_to_tmp_and_move
+    xet_get(
+    ~~~~~~~^
+        incomplete_path=tmp_path,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<4 lines>...
+        tqdm_class=tqdm_class,
+        ^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "/home/guilherme/llm/venv/lib/python3.14/site-packages/huggingface_hub/file_download.py", line 578, in xet_get
+    with session.new_file_download_group(
+         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^
+        endpoint=connection_info.endpoint,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ...<5 lines>...
+        progress_callback=progress.update_progress,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    ) as group:
+    ^
+RuntimeError: Task error: File reconstruction error: CAS Client Error: Request middleware error: error sending request for url (https://us.aws.cdn.hf.co/xorbs/default/980100e2e6ee288174cf65be8d2a2baa69594d686accdacfb5c83900f19fa907?user_id=public&X-Xet-Session-Id=01a11ffd-1bb8-7a72-af73-720b4d9b39f7&xip=QqwaOL8hwNY&repo_id=68707342a1ae848b249464a7&Expires=1791541645&Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly91cy5hd3MuY2RuLmhmLmNvL3hvcmJzL2RlZmF1bHQvOTgwMTAwZTJlNmVlMjg4MTc0Y2Y2NWJlOGQyYTJiYWE2OTU5NGQ2ODZhY2NkYWNmYjVjODM5MDBmMTlmYTkwN1xcP3VzZXJfaWQ9cHVibGljJlgtWGV0LVNlc3Npb24tSWQ9MDFhMTFmZmQtMWJiOC03YTcyLWFmNzMtNzIwYjRkOWIzOWY3JnhpcD1RcXdhT0w4aHdOWSZyZXBvX2lkPTY4NzA3MzQyYTFhZTg0OGIyNDk0NjRhNyIsIkNvbmRpdGlvbiI6eyJEYXRlTGVzc1RoYW4iOnsiRXBvY2hUaW1lIjoxNzkxNTQxNjQ1fSwiQnl0ZVJhbmdlIjp7IkV4cGVjdGVkSGVhZGVyIjoiYnl0ZXM9MjM3MzY5MjktNTg2MzY3NjMifX19XX0_&Signature=MEQCIG8J1iCJzbwN5206diNGSzwCguJqmppOcaAbdjBP8657AiBQXkR4bGYu9qiuloVJxw4KuzblWocgdPxGS1CUSAvtqg__&Key-Pair-Id=01KXEF4KZ1B6FV465MAWR4M21F&Hash-Algorithm=SHA256)

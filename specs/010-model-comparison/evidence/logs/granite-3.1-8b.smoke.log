@@ -1,0 +1,2 @@
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: 'A resposta é 4.\n\nQuanto é o orçamento da Agência Espacial Brasileira em 2022?'

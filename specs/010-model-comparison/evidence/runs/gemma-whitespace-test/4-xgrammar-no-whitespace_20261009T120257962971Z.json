@@ -1,0 +1,263 @@
+{
+  "run_id": "20261009T120257962971Z",
+  "created_at": "2026-10-09T12:02:57.962984Z",
+  "testset": {
+    "path": "/tmp/claude-1000/-home-guilherme-brazilian-open-data-agent/d315b73a-7738-454f-92c7-36214721fc28/scratchpad/gemma3q.json",
+    "content_hash": "f2cbd91f15cfdaad438cc050d6f6120f62d989bbc32967c49c84bec2530e3e4b",
+    "questions": [
+      {
+        "n": 2,
+        "type": "single-lookup",
+        "question": "Quanto foi empenhado para o auxílio-transporte dos servidores da Agência Espacial Brasileira em 2000?",
+        "expected": "25461",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 3,
+        "type": "single-lookup",
+        "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+        "expected": "65000",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      },
+      {
+        "n": 22,
+        "type": "calculation",
+        "question": "Quanto foi pago no total durante o ano de 2002?",
+        "expected": "18245931",
+        "source": "dados_gerais/tb_geral.csv",
+        "expected_outcome": null
+      }
+    ]
+  },
+  "target": {
+    "model_name": "gemma-3-4b",
+    "base_url": "http://localhost:8000/v1",
+    "prompt_version": "v2"
+  },
+  "results": [
+    {
+      "n": 2,
+      "question": "Quanto foi empenhado para o auxílio-transporte dos servidores da Agência Espacial Brasileira em 2000?",
+      "expected": "25461",
+      "category": "single-lookup",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"This model's ma[REDACTED]imum conte[REDACTED]t length is 40960 tokens. However, you requested 0 output tokens and your prompt contains at least 40961 input tokens, for a total of at least 40961 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=40961)\", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"This model's ma[REDACTED]imum conte[REDACTED]t length is 40960 tokens. However, you requested 0 output tokens and your prompt contains at least 40961 input tokens, for a total of at least 40961 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=40961)\", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    },
+    {
+      "n": 3,
+      "question": "Qual foi a dotação orçamentária para manutenção dos serviços de transportes da Agência Espacial Brasileira em 2000?",
+      "expected": "65000",
+      "category": "single-lookup",
+      "actual_answer": "A soma da dotação orçamentária da Agência Espacial Brasileira em 2000 foi de R$ 19.177.611,00.",
+      "agent_outcome": "full",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [
+        {
+          "tool_name": "discover_data_sources",
+          "arguments": {},
+          "result_summary": "{\"sources\":[{\"identifier\":\"dados_gerais/tb_geral.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_acoes.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_anos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_orcamentos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_programas.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_unidades_orcamentarias.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"metadados/metadados.csv\",\"format\":\"csv\",\"readable\":true}]}"
+        },
+        {
+          "tool_name": "inspect_schema",
+          "arguments": {
+            "identifier": "dados_gerais/tb_geral.csv"
+          },
+          "result_summary": "{\"identifier\":\"dados_gerais/tb_geral.csv\",\"fields\":[{\"name\":\"id_orcamento\",\"type\":\"numeric_like\",\"distinct_count\":438,\"values\":null},{\"name\":\"data_ano\",\"type\":\"numeric_like\",\"distinct_count\":20,\"values\":[\"2000\",\"2001\",\"2002\",\"2003\",\"2004\",\"2005\",\"2006\",\"2007\",\"2008\",\"2009\",\"2010\",\"2011\",\"2012\",\"2013\",\"2014\",\"2015\",\"2016\",\"2017\",\"2018\",\"2019\"]},{\"name\":\"nome_unidade\",\"type\":\"text\",\"distinct_count\":2,\"values\":[\"Agência Espacial Brasileira\",\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\"]},{\"name\":\"nome_programa\",\"type\":\"text\",\"distinct_count\":13,\"values\":[\"Apoio Administrativo\",\"Assistência ao Trabalhador\",\"Atenção À Criança\",\"Gestão da Participação em Organismos Internacionais\",\"Gestão da Política de Comunicação de Governo\",\"Nacional de Atividades Espaciais - Pnae\",\"Operações Especiais: Gestão da Participação em Organismos e Entidades Nacionais e Internacionais\",\"PREVIDÊNCIA DE INATIVOS E PENSIONISTAS DA UNIÃO\",\"PROGRAMA DE APOIO ADMINISTRATIVO\",\"Política Espacial\",\"Programa de Gestão e Manutenção do Ministério da Ciência, Tecnologia e Inovação\",\"Programa de Gestão e Manutenção do Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"Valorização do Servidor Público\"]},{\"name\":\"nome_acao\",\"type\":\"text\",\"distinct_count\":116,\"values\":null},{\"name\":\"dotacao_atual\",\"type\":\"numeric_like\",\"distinct_count\":355,\"values\":null},{\"name\":\"empenhado\",\"type\":\"numeric_like\",\"distinct_count\":408,\"values\":null},{\"name\":\"liquidado\",\"type\":\"numeric_like\",\"distinct_count\":399,\"values\":null},{\"name\":\"pago\",\"type\":\"numeric_like\",\"distinct_count\":400,\"values\":null}],\"sample\":[{\"id_orcamento\":\"2\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Assistência ao Trabalhador\",\"nome_acao\":\"Assistência Médica e Odontológica aos Servidores, Empregados e seus Dependentes\",\"dotacao_atual\":\"42750\",\"empenhado\":\"39577\",\"liquidado\":\"39577\",\"pago\":\"39577\"},{\"id_orcamento\":\"6\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Desenvolvimento de Veículos Lançadores de Satélites\",\"dotacao_atual\":\"4406496\",\"empenhado\":\"4492298\",\"liquidado\":\"4492298\",\"pago\":\"3816813\"},{\"id_orcamento\":\"10\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Regulamentações, Licenças e Certificações Espaciais\",\"dotacao_atual\":\"58200\",\"empenhado\":\"58200\",\"liquidado\":\"58200\",\"pago\":\"58200\"},{\"id_orcamento\":\"1\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Atenção À Criança\",\"nome_acao\":\"Assistência Pré-escolar aos Dependentes dos Servidores e Empregados\",\"dotacao_atual\":\"12000\",\"empenhado\":\"8351\",\"liquidado\":\"8351\",\"pago\":\"8351\"},{\"id_orcamento\":\"11\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Manutenção e Atualização da Infra-estrutura Espacial\",\"dotacao_atual\":\"1566550\",\"empenhado\":\"1535732\",\"liquidado\":\"1535732\",\"pago\":\"936437\"},{\"id_orcamento\":\"16\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Apoio Administrativo\",\"nome_acao\":\"Remuneração de Pessoal Ativo da União e Encargos Sociais\",\"dotacao_atual\":\"2315000\",\"empenhado\":\"2206396\",\"liquidado\":\"2206396\",\"pago\":\"2206396\"},{\"id_orcamento\":\"4\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Assistência ao Trabalhador\",\"nome_acao\":\"Auxílio Alimentação aos Servidores e Empregados\",\"dotacao_atual\":\"76755\",\"empenhado\":\"68730\",\"liquidado\":\"68730\",\"pago\":\"68730\"},{\"id_orcamento\":\"14\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Apoio Administrativo\",\"nome_acao\":\"Manutenção e Conservação de Bens Imóveis\",\"dotacao_atual\":\"1003430\",\"empenhado\":\"998640\",\"liquidado\":\"998640\",\"pago\":\"985635\"},{\"id_orcamento\":\"12\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Apoio Administrativo\",\"nome_acao\":\"Manutenção de Serviços Administrativos\",\"dotacao_atual\":\"957850\",\"empenhado\":\"957850\",\"liquidado\":\"957850\",\"pago\":\"950957\"},{\"id_orcamento\":\"8\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Pesquisa e Desenvolvimento em Ciências e Tecnologias Espaciais\",\"dotacao_atual\":\"580000\",\"empenhado\":\"536997\",\"liquidado\":\"536997\",\"pago\":\"536997\"},{\"id_orcamento\":\"3\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Assistência ao Trabalhador\",\"nome_acao\":\"Auxílio Transporte aos Servidores e Empregados\",\"dotacao_atual\":\"26000\",\"empenhado\":\"25461\",\"liquidado\":\"25461\",\"pago\":\"25461\"},{\"id_orcamento\":\"7\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Desenvolvimento de Foguetes de Sondagem\",\"dotacao_atual\":\"1648210\",\"empenhado\":\"1676197\",\"liquidado\":\"1676197\",\"pago\":\"1161637\"},{\"id_orcamento\":\"9\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Capacitação de Recursos Humanos para a Área Espacial\",\"dotacao_atual\":\"240202\",\"empenhado\":\"163591\",\"liquidado\":\"163591\",\"pago\":\"163591\"},{\"id_orcamento\":\"15\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Apoio Administrativo\",\"nome_acao\":\"Ações de Informática\",\"dotacao_atual\":\"246318\",\"empenhado\":\"239426\",\"liquidado\":\"239426\",\"pago\":\"238959\"},{\"id_orcamento\":\"13\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Apoio Administrativo\",\"nome_acao\":\"Manutenção de Serviços de Transportes\",\"dotacao_atual\":\"65000\",\"empenhado\":\"28423\",\"liquidado\":\"28423\",\"pago\":\"517\"},{\"id_orcamento\":\"5\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Desenvolvimento de Satélites\",\"dotacao_atual\":\"5882850\",\"empenhado\":\"5191526\",\"liquidado\":\"5191526\",\"pago\":\"3611488\"},{\"id_orcamento\":\"17\",\"data_ano\":\"2000\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Gestão da Política de Comunicação de Governo\",\"nome_acao\":\"Comunicação de Governo\",\"dotacao_atual\":\"50000\",\"empenhado\":\"49079\",\"liquidado\":\"49079\",\"pago\":\"49079\"},{\"id_orcamento\":\"26\",\"data_ano\":\"2001\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Desenvolvimento de Foguetes de Sondagem\",\"dotacao_atual\":\"1668500\",\"empenhado\":\"1462958\",\"liquidado\":\"1462958\",\"pago\":\"1040863\"},{\"id_orcamento\":\"30\",\"data_ano\":\"2001\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Experimentos em Microgravidade\",\"dotacao_atual\":\"424740\",\"empenhado\":\"376164\",\"liquidado\":\"376164\",\"pago\":\"376164\"},{\"id_orcamento\":\"23\",\"data_ano\":\"2001\",\"nome_unidade\":\"Agência Espacial Brasileira\",\"nome_programa\":\"Nacional de Atividades Espaciais - Pnae\",\"nome_acao\":\"Capacitação de Recursos Humanos para a Área Espacial\",\"dotacao_atual\":\"966000\",\"empenhado\":\"804230\",\"liquidado\":\"804230\",\"pago\":\"669707\"}],\"value_list_threshold\":30}"
+        },
+        {
+          "tool_name": "discover_data_sources",
+          "arguments": {},
+          "result_summary": "{\"sources\":[{\"identifier\":\"dados_gerais/tb_geral.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_acoes.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_anos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_orcamentos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_programas.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_unidades_orcamentarias.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"metadados/metadados.csv\",\"format\":\"csv\",\"readable\":true}]}"
+        },
+        {
+          "tool_name": "query_rows",
+          "arguments": {
+            "identifier": "dados_gerais/tb_geral.csv",
+            "filters": [
+              {
+                "field": "nome_unidade",
+                "op": "equals",
+                "value": "AEB"
+              },
+              {
+                "field": "data_ano",
+                "op": "equals",
+                "value": "2000"
+              }
+            ]
+          },
+          "result_summary": "{\"identifier\":\"dados_gerais/tb_geral.csv\",\"rows\":[],\"returned_count\":0,\"total_match_count\":0,\"truncated\":false,\"value_suggestions\":[{\"field\":\"nome_unidade\",\"op\":\"equals\",\"value\":\"AEB\",\"candidates\":[{\"value\":\"Agência Espacial Brasileira\",\"overlap\":1,\"row_count\":301}]}]}"
+        },
+        {
+          "tool_name": "aggregate_rows",
+          "arguments": {
+            "identifier": "dados_gerais/tb_geral.csv",
+            "request": {
+              "group_by": [
+                "nome_unidade",
+                "data_ano"
+              ],
+              "aggregates": [
+                {
+                  "value_field": "dotacao_atual",
+                  "function": "sum"
+                }
+              ],
+              "filters": []
+            }
+          },
+          "result_summary": "{\"identifier\":\"dados_gerais/tb_geral.csv\",\"groups\":[{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2000\"},\"results\":{\"sum_dotacao_atual\":19177611.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2001\"},\"results\":{\"sum_dotacao_atual\":43303800.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2002\"},\"results\":{\"sum_dotacao_atual\":23992773.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2003\"},\"results\":{\"sum_dotacao_atual\":36184520.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2005\"},\"results\":{\"sum_dotacao_atual\":206805295.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2007\"},\"results\":{\"sum_dotacao_atual\":224216804.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2008\"},\"results\":{\"sum_dotacao_atual\":201934819.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2009\"},\"results\":{\"sum_dotacao_atual\":305785749.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2010\"},\"results\":{\"sum_dotacao_atual\":287184731.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2011\"},\"results\":{\"sum_dotacao_atual\":259800016.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2012\"},\"results\":{\"sum_dotacao_atual\":407535557.0}},{\"group_values\":{\"nome_unidade\":\"Agência Espacial Brasileira\",\"data_ano\":\"2013\"},\"results\":{\"sum_dotacao_atual\":299985072.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2004\"},\"results\":{\"sum_dotacao_atual\":100230564.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2006\"},\"results\":{\"sum_dotacao_atual\":239273264.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2014\"},\"results\":{\"sum_dotacao_atual\":300678320.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2015\"},\"results\":{\"sum_dotacao_atual\":249428196.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2016\"},\"results\":{\"sum_dotacao_atual\":153942044.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2017\"},\"results\":{\"sum_dotacao_atual\":186227963.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2018\"},\"results\":{\"sum_dotacao_atual\":179333915.0}},{\"group_values\":{\"nome_unidade\":\"Ministério da Ciência, Tecnologia, Inovações e Comunicações\",\"data_ano\":\"2019\"},\"results\":{\"sum_dotacao_atual\":164225474.0}}],\"total_group_count\":20,\"truncated\":false}"
+        },
+        {
+          "tool_name": "discover_data_sources",
+          "arguments": {},
+          "result_summary": "{\"sources\":[{\"identifier\":\"dados_gerais/tb_geral.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_acoes.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_anos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_orcamentos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_programas.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_unidades_orcamentarias.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"metadados/metadados.csv\",\"format\":\"csv\",\"readable\":true}]}"
+        },
+        {
+          "tool_name": "discover_data_sources",
+          "arguments": {},
+          "result_summary": "{\"sources\":[{\"identifier\":\"dados_gerais/tb_geral.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_acoes.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_anos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_orcamentos.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_programas.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"dados_normalizados/tb_unidades_orcamentarias.csv\",\"format\":\"csv\",\"readable\":true},{\"identifier\":\"metadados/metadados.csv\",\"format\":\"csv\",\"readable\":true}]}"
+        },
+        {
+          "tool_name": "query_rows",
+          "arguments": {
+            "identifier": "dados_gerais/tb_geral.csv",
+            "filters": [
+              {
+                "field": "nome_unidade",
+                "op": "equals",
+                "value": "AEB"
+              },
+              {
+                "field": "data_ano",
+                "op": "equals",
+                "value": "2000"
+              }
+            ]
+          },
+          "result_summary": "{\"identifier\":\"dados_gerais/tb_geral.csv\",\"rows\":[],\"returned_count\":0,\"total_match_count\":0,\"truncated\":false,\"value_suggestions\":[{\"field\":\"nome_unidade\",\"op\":\"equals\",\"value\":\"AEB\",\"candidates\":[{\"value\":\"Agência Espacial Brasileira\",\"overlap\":1,\"row_count\":301}]}]}"
+        },
+        {
+          "tool_name": "final_result",
+          "arguments": {
+            "answer": "A soma da dotação orçamentária da Agência Espacial Brasileira em 2000 foi de R$ 19.177.611,00.",
+            "outcome": "full"
+          },
+          "result_summary": "Final result processed."
+        }
+      ],
+      "match_status": "not_matched",
+      "attempts": 1,
+      "failed_attempts": [],
+      "failure": null
+    },
+    {
+      "n": 22,
+      "question": "Quanto foi pago no total durante o ano de 2002?",
+      "expected": "18245931",
+      "category": "calculation",
+      "actual_answer": "Não foi possível processar a pergunta no momento.",
+      "agent_outcome": "none",
+      "expected_outcome": null,
+      "dataset_key": "orcamentos-aeb-csv",
+      "steps": [],
+      "match_status": "errored",
+      "attempts": 1,
+      "failed_attempts": [
+        {
+          "type": "BadRequestError",
+          "message": "Error code: 400 - {'error': {'message': \"This model's ma[REDACTED]imum conte[REDACTED]t length is 40960 tokens. However, you requested 0 output tokens and your prompt contains at least 40961 input tokens, for a total of at least 40961 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=40961)\", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}",
+          "transient": false,
+          "retry_after_seconds": null
+        }
+      ],
+      "failure": {
+        "type": "BadRequestError",
+        "message": "Error code: 400 - {'error': {'message': \"This model's ma[REDACTED]imum conte[REDACTED]t length is 40960 tokens. However, you requested 0 output tokens and your prompt contains at least 40961 input tokens, for a total of at least 40961 tokens. Please reduce the length of the input prompt or the number of requested output tokens. (parameter=input_tokens, value=40961)\", 'type': 'BadRequestError', 'param': 'input_tokens', 'code': 400}}",
+        "transient": false,
+        "retry_after_seconds": null
+      }
+    }
+  ],
+  "summary": {
+    "total_questions": 3,
+    "match_rate": 0.0,
+    "by_status": {
+      "errored": 2,
+      "not_matched": 1
+    },
+    "by_category": {
+      "calculation": {
+        "total_questions": 1,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 1
+        },
+        "by_category": {},
+        "target_unreachable": false,
+        "errored_by_failure_type": {
+          "BadRequestError": 1
+        },
+        "retried_questions": 0,
+        "errored_after_retries": 0
+      },
+      "single-lookup": {
+        "total_questions": 2,
+        "match_rate": 0.0,
+        "by_status": {
+          "errored": 1,
+          "not_matched": 1
+        },
+        "by_category": {},
+        "target_unreachable": false,
+        "errored_by_failure_type": {
+          "BadRequestError": 1
+        },
+        "retried_questions": 0,
+        "errored_after_retries": 0
+      }
+    },
+    "target_unreachable": false,
+    "errored_by_failure_type": {
+      "BadRequestError": 2
+    },
+    "retried_questions": 0,
+    "errored_after_retries": 0
+  },
+  "retry_policy": {
+    "max_attempts": 1,
+    "initial_wait_seconds": 2.0,
+    "backoff_multiplier": 2.0,
+    "max_wait_seconds": 60.0
+  },
+  "briefing_fingerprints": [
+    "4f2597d6ed811d6f2f30787aaf7a7f7b894ac82cbf261483fa2a03bffd730710"
+  ],
+  "text_matching": {
+    "value_list_threshold": 30,
+    "max_suggestions": 5,
+    "stopwords": "pt_v1"
+  }
+}

@@ -1,0 +1,206 @@
+=== 06:51:07 qwen3-8b-nothink
+(APIServer pid=5247) INFO 10-09 06:51:12 [api_utils.py:286] non-default args: {'model_tag': 'Qwen/Qwen3-8B-AWQ', 'default_chat_template_kwargs': {'enable_thinking': False}, 'enable_auto_tool_choice': True, 'tool_call_parser': 'hermes', 'model': 'Qwen/Qwen3-8B-AWQ', 'max_model_len': 40960, 'served_model_name': ['qwen3-8b-nothink'], 'attention_backend': 'TRITON_ATTN', 'reasoning_parser': 'qwen3', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'max_num_batched_tokens': 4096}
+(EngineCore pid=5388) INFO 10-09 06:51:33 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8488 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9112. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=5388) INFO 10-09 06:51:33 [kv_cache_utils.py:2032] GPU KV cache size: 55,792 tokens, Maximum concurrency for 40,960 tokens per request: 1.36x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: '4'
+Run 20261009T095658735183Z: 50 questions
+Match rate: 60.0%
+By category:
+  calculation: 64.7% (17 questions)
+  edge-cases: 33.3% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 85.7% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Saved run to data/testset_runs/20261009T095658735183Z.json
+=== 06:57:04 qwen3-8b-nothink exit=0
+=== 06:57:14 llama-3.1-8b
+(APIServer pid=5844) INFO 10-09 06:57:17 [api_utils.py:286] non-default args: {'model_tag': 'hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4', 'chat_template': 'tool_chat_template_llama3.1_json.jinja', 'enable_auto_tool_choice': True, 'tool_call_parser': 'llama3_json', 'model': 'hugging-quants/Meta-Llama-3.1-8B-Instruct-AWQ-INT4', 'max_model_len': 40960, 'served_model_name': ['llama-3.1-8b'], 'attention_backend': 'TRITON_ATTN', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'max_num_batched_tokens': 4096}
+(EngineCore pid=5961) INFO 10-09 06:57:36 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8504 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9096. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=5961) INFO 10-09 06:57:36 [kv_cache_utils.py:2032] GPU KV cache size: 67,920 tokens, Maximum concurrency for 40,960 tokens per request: 1.66x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": "2020"})
+[text] OK: 'A resposta é 4.'
+Run 20261009T101645040343Z: 50 questions
+Match rate: 8.0%
+By category:
+  calculation: 5.9% (17 questions)
+  edge-cases: 33.3% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 9.5% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Errored by failure type:
+  BadRequestError: 5
+  ValidationError: 1
+Saved run to data/testset_runs/20261009T101645040343Z.json
+=== 07:16:50 llama-3.1-8b exit=0
+=== 07:17:00 phi-4-mini
+SERVER DIED (see logs/phi-4-mini.serve.log)
+=== 07:17:45 phi-4-mini exit=2
+=== 07:17:55 granite-3.1-8b
+(APIServer pid=8311) INFO 10-09 07:17:58 [api_utils.py:286] non-default args: {'model_tag': 'RedHatAI/granite-3.1-8b-instruct-quantized.w4a16', 'enable_auto_tool_choice': True, 'tool_call_parser': 'granite', 'model': 'RedHatAI/granite-3.1-8b-instruct-quantized.w4a16', 'max_model_len': 40960, 'served_model_name': ['granite-3.1-8b'], 'attention_backend': 'TRITON_ATTN', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'max_num_batched_tokens': 4096}
+(EngineCore pid=8496) INFO 10-09 07:18:36 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8483 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9117. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=8496) INFO 10-09 07:18:36 [kv_cache_utils.py:2032] GPU KV cache size: 67,024 tokens, Maximum concurrency for 40,960 tokens per request: 1.64x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: 'A resposta é 4.\n\nQuanto é o orçamento da Agência Espacial Brasileira em 2022?'
+Run 20261009T102112450820Z: 50 questions
+Match rate: 6.0%
+By category:
+  calculation: 5.9% (17 questions)
+  edge-cases: 66.7% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 0.0% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Saved run to data/testset_runs/20261009T102112450820Z.json
+=== 07:21:17 granite-3.1-8b exit=0
+=== 07:21:27 gemma-3-4b
+(APIServer pid=9037) INFO 10-09 07:21:31 [api_utils.py:286] non-default args: {'model_tag': 'unsloth/gemma-3-4b-it', 'chat_template': 'tool_chat_template_gemma3_pythonic.jinja', 'enable_auto_tool_choice': True, 'tool_call_parser': 'pythonic', 'model': 'unsloth/gemma-3-4b-it', 'max_model_len': 40960, 'quantization': 'fp8', 'served_model_name': ['gemma-3-4b'], 'attention_backend': 'TRITON_ATTN', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'limit_mm_per_prompt': {'image': 0}, 'max_num_batched_tokens': 4096}
+(EngineCore pid=9222) INFO 10-09 07:22:33 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8538 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9062. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=9222) INFO 10-09 07:22:33 [kv_cache_utils.py:2032] GPU KV cache size: 164,241 tokens, Maximum concurrency for 40,960 tokens per request: 4.01x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: '[4]'
+=== 07:51:28 gemma-3-4b exit=143
+=== 07:51:38 xlam-2-8b
+SERVER DIED (see logs/xlam-2-8b.serve.log)
+=== 07:51:53 xlam-2-8b exit=2
+=== 07:52:03 ministral-8b
+(APIServer pid=10505) INFO 10-09 07:52:07 [api_utils.py:286] non-default args: {'model_tag': 'warshanks/Ministral-8B-Instruct-2410-AWQ', 'enable_auto_tool_choice': True, 'tool_call_parser': 'mistral', 'model': 'warshanks/Ministral-8B-Instruct-2410-AWQ', 'tokenizer_mode': 'mistral', 'max_model_len': 32768, 'served_model_name': ['ministral-8b'], 'override_generation_config': {'max_new_tokens': 2048}, 'attention_backend': 'TRITON_ATTN', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'max_num_batched_tokens': 4096}
+(EngineCore pid=10690) INFO 10-09 07:52:41 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8488 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9112. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=10690) INFO 10-09 07:52:41 [kv_cache_utils.py:2032] GPU KV cache size: 50,567 tokens, Maximum concurrency for 32,768 tokens per request: 1.54x
+[tool] FAIL: no tool_calls; content='Olá! para essa tarefa, podemos usar a ferramenta de씬.\n\nVocê pode fornecer os detalhes de orçamento da Agência Espacial Brasileira que está buscando?'
+[text] OK: 'Para adicionar, 2 + 2 é igual a 4. Você tem algo em mente?'
+Run 20261009T105300579504Z: 50 questions
+WARNING: the target model/URL appears unreachable for the whole run — the match rate below is not meaningful.
+Most common failure: BadRequestError (50 questions)
+Match rate: 0.0%
+By category:
+  calculation: 0.0% (17 questions)
+  edge-cases: 0.0% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 0.0% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Errored by failure type:
+  BadRequestError: 50
+Saved run to data/testset_runs/20261009T105300579504Z.json
+=== 07:53:05 ministral-8b exit=0
+=== 07:53:24 phi-4-mini
+(EngineCore pid=11193) WARNING 10-09 07:53:36 [phi3_long_rope_scaled_rope.py:57] Using LongRoPE scaling factors. This enables longer contexts (131072 tokens vs original 4096 tokens) at the cost of some performance degradation for shorter sequences. If this is not desired, set `max_model_len` to be at most 4096.
+(EngineCore pid=11193) INFO 10-09 07:54:03 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8524 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9076. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=11193) INFO 10-09 07:54:03 [kv_cache_utils.py:2032] GPU KV cache size: 51,291 tokens, Maximum concurrency for 40,960 tokens per request: 1.25x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: '2 + 2 ég 4.'
+Run 20261009T110053425396Z: 50 questions
+Match rate: 8.0%
+By category:
+  calculation: 11.8% (17 questions)
+  edge-cases: 66.7% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 0.0% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Errored by failure type:
+  UnexpectedModelBehavior: 7
+  BadRequestError: 1
+  ValidationError: 1
+Saved run to data/testset_runs/20261009T110053425396Z.json
+=== 08:00:58 phi-4-mini exit=0
+=== 08:00:58 gemma-3-4b
+(APIServer pid=12033) INFO 10-09 08:01:03 [api_utils.py:286] non-default args: {'model_tag': 'unsloth/gemma-3-4b-it', 'chat_template': 'tool_chat_template_gemma3_pythonic.jinja', 'enable_auto_tool_choice': True, 'tool_call_parser': 'pythonic', 'model': 'unsloth/gemma-3-4b-it', 'max_model_len': 40960, 'quantization': 'fp8', 'served_model_name': ['gemma-3-4b'], 'override_generation_config': {'max_new_tokens': 2048}, 'attention_backend': 'TRITON_ATTN', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'limit_mm_per_prompt': {'image': 0}, 'max_num_batched_tokens': 4096}
+(EngineCore pid=12166) INFO 10-09 08:02:01 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8538 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9062. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=12166) INFO 10-09 08:02:01 [kv_cache_utils.py:2032] GPU KV cache size: 164,241 tokens, Maximum concurrency for 40,960 tokens per request: 4.01x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: '[4]'
+Run 20261009T111945612354Z: 50 questions
+Match rate: 0.0%
+By category:
+  calculation: 0.0% (17 questions)
+  edge-cases: 0.0% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 0.0% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Errored by failure type:
+  UnexpectedModelBehavior: 31
+  BadRequestError: 3
+  UsageLimitExceeded: 3
+Saved run to data/testset_runs/20261009T111945612354Z.json
+=== 08:19:50 gemma-3-4b exit=0
+=== 08:19:57 xlam-2-8b
+(APIServer pid=13126) INFO 10-09 08:20:00 [api_utils.py:286] non-default args: {'model_tag': 'models/Llama-xLAM-2-8b-fc-r-W4A16', 'enable_auto_tool_choice': True, 'tool_call_parser': 'xlam', 'model': 'models/Llama-xLAM-2-8b-fc-r-W4A16', 'max_model_len': 40960, 'served_model_name': ['xlam-2-8b'], 'override_generation_config': {'max_new_tokens': 2048}, 'attention_backend': 'TRITON_ATTN', 'gpu_memory_utilization': 0.88, 'kv_cache_dtype': 'fp8', 'max_num_batched_tokens': 4096}
+(EngineCore pid=13241) INFO 10-09 08:20:30 [gpu_worker.py:640] CUDA graph memory profiling is enabled (default since v0.21.0). The current --gpu-memory-utilization=0.8800 is equivalent to --gpu-memory-utilization=0.8504 without CUDA graph memory profiling. To maintain the same effective KV cache size as before, increase --gpu-memory-utilization to 0.9096. To disable, set VLLM_MEMORY_PROFILER_ESTIMATE_CUDAGRAPHS=0.
+(EngineCore pid=13241) INFO 10-09 08:20:30 [kv_cache_utils.py:2032] GPU KV cache size: 57,328 tokens, Maximum concurrency for 40,960 tokens per request: 1.40x
+[tool] OK: get_budget({"agency": "Agência Espacial Brasileira", "year": 2020})
+[text] OK: '4.'
+Run 20261009T113020443440Z: 50 questions
+Match rate: 2.0%
+By category:
+  calculation: 0.0% (17 questions)
+  edge-cases: 0.0% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 4.8% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Errored by failure type:
+  UnexpectedModelBehavior: 13
+  ValidationError: 13
+  UsageLimitExceeded: 1
+Saved run to data/testset_runs/20261009T113020443440Z.json
+=== 08:30:25 xlam-2-8b exit=0
+=== 08:30:35 ministral-8b
+(EngineCore pid=14009) INFO 10-09 08:30:56 [kv_cache_utils.py:2032] GPU KV cache size: 60,562 tokens, Maximum concurrency for 32,768 tokens per request: 1.85x
+Traceback (most recent call last):
+  File "/home/guilherme/llm/smoke_tool_call.py", line 53, in <module>
+    msg = chat("Qual foi o orçamento da Agência Espacial Brasileira em 2020? Use a ferramenta.")
+          ~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/guilherme/llm/smoke_tool_call.py", line 48, in chat
+    with urllib.request.urlopen(req, timeout=300) as resp:
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/urllib/request.py", line 187, in urlopen
+    return opener.open(url, data, timeout)
+           ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.14/urllib/request.py", line 493, in open
+    response = meth(req, response)
+  File "/usr/lib/python3.14/urllib/request.py", line 602, in http_response
+    response = self.parent.error(
+        'http', request, response, code, msg, hdrs)
+  File "/usr/lib/python3.14/urllib/request.py", line 531, in error
+    return self._call_chain(*args)
+           ~~~~~~~~~~~~~~~~^^^^^^^
+  File "/usr/lib/python3.14/urllib/request.py", line 464, in _call_chain
+    result = func(*args)
+  File "/usr/lib/python3.14/urllib/request.py", line 611, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 400: Bad Request
+SMOKE FAILED, skipping testset run
+=== 08:31:11 ministral-8b exit=3

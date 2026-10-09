@@ -1,0 +1,17 @@
+Run 20261009T124147889923Z: 50 questions
+Match rate: 4.0%
+By category:
+  calculation: 0.0% (17 questions)
+  edge-cases: 33.3% (3 questions)
+  multiple-files: 0.0% (9 questions)
+  single-lookup: 4.8% (21 questions)
+Prompt version: v2
+Briefing fingerprint: 4f2597d6ed81
+Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)
+Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1
+Questions retried: 0
+Errored after exhausting retries: 0
+Errored by failure type:
+  BadRequestError: 13
+  UsageLimitExceeded: 1
+Saved run to data/testset_runs/20261009T124147889923Z.json

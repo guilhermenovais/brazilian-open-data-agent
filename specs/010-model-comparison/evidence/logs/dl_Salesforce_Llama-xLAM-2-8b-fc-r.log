@@ -1,0 +1,2 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+path=/home/guilherme/.cache/huggingface/hub/models--Salesforce--Llama-xLAM-2-8b-fc-r/snapshots/a0efe39a575ef33d1d233cb2e799ae053b636c0e
