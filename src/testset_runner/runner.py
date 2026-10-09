@@ -5,6 +5,7 @@ from collections.abc import Callable
 from datetime import datetime, timezone
 from pathlib import Path
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.answerer import QuestionAnswerer
 from qa_agent.models import FailureDetail, QuestionAnsweringResult
 from testset_runner.loader import TestsetLoader
@@ -39,6 +40,7 @@ def run_testset(
     matcher: MatchStrategy = NumericMatchStrategy(),
     store: RunStore,
     retry_policy: RetryPolicy = RetryPolicy(),
+    text_matching: TextMatchingConfig | None = None,
     sleep: Callable[[float], None] = time.sleep,
 ) -> TestRun:
     """Asks every question of the testset, grades the answers, and saves one `TestRun`.
@@ -49,6 +51,9 @@ def run_testset(
     or from another question, is ever passed back in, so per-question isolation holds
     for attempts too. Only the bookkeeping (`attempts`, `failed_attempts`) is carried
     between attempts, and the recorded result is always the last attempt's.
+
+    `text_matching` is recorded on the run as given (the answerer's own config; `None`
+    when the caller does not know it).
 
     `sleep` is a test seam so the wait sequence can be asserted without real waiting. A
     `KeyboardInterrupt` during a wait propagates out before `store.save`, so no partial
@@ -61,7 +66,7 @@ def run_testset(
     fingerprints: set[str] = set()
     for question in testset.questions:
         answer_result, attempts, failed_attempts = _ask_with_retry(
-            answerer, question.question, retry_policy, sleep
+            lambda: answerer.answer(question.question), retry_policy, sleep
         )
         if answer_result.briefing_fingerprint:
             fingerprints.add(answer_result.briefing_fingerprint)
@@ -102,18 +107,22 @@ def run_testset(
         summary=summary,
         retry_policy=retry_policy,
         briefing_fingerprints=sorted(fingerprints),
+        text_matching=text_matching,
     )
     store.save(run)
     return run
 
 
 def _ask_with_retry(
-    answerer: QuestionAnswerer,
-    question: str,
+    ask: Callable[[], QuestionAnsweringResult],
     policy: RetryPolicy,
     sleep: Callable[[float], None],
 ) -> tuple[QuestionAnsweringResult, int, list[FailureDetail]]:
     """Returns the last attempt's result, the number of attempts, and every failure seen.
+
+    `ask` makes one fresh attempt. It is a callable rather than an answerer + question so
+    the standalone runner (`answerer.answer(question)`) and the conversation runner
+    (`answerer.answer_turn(message, context)`) share one retry loop.
 
     An errored result with no `failure` (a legacy/third-party answerer) is treated as a
     non-transient failure with no details.
@@ -122,7 +131,7 @@ def _ask_with_retry(
     attempts = 0
     while True:
         attempts += 1
-        result = answerer.answer(question)
+        result = ask()
         if not result.errored:
             return result, attempts, failed_attempts
         failure = result.failure

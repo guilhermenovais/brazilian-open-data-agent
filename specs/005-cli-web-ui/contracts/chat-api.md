@@ -29,6 +29,13 @@ chat request shape: a list of prior messages plus the new user message.
    earlier message in the payload (the client's own conversation history) is
    accepted but ignored for answering purposes — see data-model.md's note on
    why the agent stays stateless per question.
+
+   > **Superseded by 008.** Steps 2 and 4 are replaced by
+   > [008 contracts/chat-api.md](../../008-chat-conversation-history/contracts/chat-api.md):
+   > earlier visible messages are no longer ignored. They are turned into
+   > text-only conversation turns and passed to `ConversationalAnswerer.answer_turn`.
+   > The server still keeps no conversation state. Everything else in this contract
+   > still holds.
 3. **Empty/whitespace-only question**: respond with a `FinishChunk` stream
    containing no assistant text (equivalently, short-circuit before step 4)
    rather than invoking `QaAgentQuestionAnswerer` — avoids writing a

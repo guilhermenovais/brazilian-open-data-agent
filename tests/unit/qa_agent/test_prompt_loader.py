@@ -1,7 +1,10 @@
 """Unit tests for prompt_loader: versioned prompt files, briefing injection, fingerprint."""
 
 import hashlib
+import re
 from pathlib import Path
+
+import pytest
 
 from qa_agent import prompt_loader
 
@@ -84,13 +87,11 @@ def test_008_us2_v2_carries_over_v1_rules_1_2_3_6_7() -> None:
 
 # --- 008 US4: version discovery, validation, fingerprint --------------------------------
 
-import pytest  # noqa: E402
-
 from qa_agent.exceptions import UnknownPromptVersionError  # noqa: E402
 
 
 def test_008_us4_available_versions() -> None:
-    assert prompt_loader.available_versions() == ["v1", "v2"]
+    assert prompt_loader.available_versions() == ["v1", "v2", "v3"]
 
 
 def test_008_us4_default_is_v2() -> None:
@@ -105,8 +106,8 @@ def test_008_us4_3_check_version_rejects_unknown() -> None:
     exc = exc_info.value
     assert isinstance(exc, ValueError)
     assert exc.requested == "v9"
-    assert exc.available == ["v1", "v2"]
-    assert str(exc) == "unknown prompt version 'v9' (available: v1, v2)"
+    assert exc.available == ["v1", "v2", "v3"]
+    assert str(exc) == "unknown prompt version 'v9' (available: v1, v2, v3)"
 
 
 def test_008_us4_3_render_rejects_unknown() -> None:
@@ -126,3 +127,46 @@ def test_008_us4_6_fingerprint() -> None:
     assert prompt_loader.fingerprint(text) == prompt_loader.fingerprint(str(text))
     assert prompt_loader.fingerprint(text) != prompt_loader.fingerprint(text + " ")
     assert prompt_loader.fingerprint("dotação") != prompt_loader.fingerprint("dotacao")
+
+
+# --- 008-chat-conversation-history: system_v3 (conversational path) ----------------------
+
+
+def _normalized_rules(text: str) -> dict[int, str]:
+    """Each top-level numbered rule, whitespace-normalized, keyed by its number."""
+    rules: dict[int, str] = {}
+    for match in re.finditer(r"^(\d+)\. (.*?)(?=^\d+\. |^\S|\Z)", text, re.MULTILINE | re.DOTALL):
+        rules[int(match.group(1))] = " ".join(match.group(2).split())
+    return rules
+
+
+def test_render_v3_includes_the_briefing() -> None:
+    briefing = "Resumo fictício para o teste da versão 3."
+    assert briefing in prompt_loader.render(briefing, "v3")
+
+
+def test_v3_keeps_every_v1_rule_except_the_reworded_rule_2() -> None:
+    v1_rules = _normalized_rules(prompt_loader.render("B", "v1"))
+    v3_rules = _normalized_rules(prompt_loader.render("B", "v3"))
+
+    assert set(v1_rules) == set(range(1, 9))
+    for number, rule in v1_rules.items():
+        if number == 2:
+            continue
+        assert v3_rules[number] == rule
+    assert "durante este mesmo atendimento" in v1_rules[2]
+    assert "nesta mesma resposta, durante o turno atual" in v3_rules[2]
+
+
+def test_v3_has_a_conversation_section() -> None:
+    rendered = prompt_loader.render("B", "v3")
+    assert "\nConversa:\n" in rendered
+    assert "consultados novamente" in rendered
+    assert "não herda assunto" in rendered
+
+
+def test_v3_has_the_clarification_rule() -> None:
+    rendered = " ".join(prompt_loader.render("B", "v3").split())
+    assert "pediu ao usuário que esclarecesse" in rendered
+    assert "combine-a com a pergunta original" in rendered
+    assert "peça novamente apenas o que falta" in rendered

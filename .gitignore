@@ -12,3 +12,4 @@ build/
 .env*
 data/logs/
 data/testset_runs/
+data/conversation_runs/

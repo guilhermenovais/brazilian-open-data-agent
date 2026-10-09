@@ -22,24 +22,43 @@ class DiscoveryResult(BaseModel):
 class FieldInfo(BaseModel):
     name: str
     type: Literal["numeric_like", "text"]
+    distinct_count: int = Field(
+        description="Distinct non-missing raw values of this field across the **whole** source."
+    )
+    values: list[str] | None = Field(
+        description=(
+            "All those values, raw, sorted by code point, when `distinct_count <= "
+            "value_list_threshold`. Otherwise `null` (not listed: too many values)."
+        )
+    )
 
 
 class SchemaInspectionResult(BaseModel):
     identifier: str
     fields: list[FieldInfo]
     sample: list[dict[str, str | None]]
+    value_list_threshold: int = Field(
+        description="The threshold used, so a `null` `values` reads as 'more than N values'."
+    )
 
 
 class EqualsCondition(BaseModel):
     field: str
     op: Literal["equals"] = "equals"
-    value: str
+    value: str = Field(
+        description="Whole value, compared ignoring case, accents and punctuation."
+    )
 
 
 class ContainsCondition(BaseModel):
     field: str
     op: Literal["contains"] = "contains"
-    value: str
+    value: str = Field(
+        description=(
+            "Every word (filler words like 'de', 'do' skipped) must start a word of the "
+            "stored value, in any order; case, accents and punctuation ignored."
+        )
+    )
 
 
 class RangeCondition(BaseModel):
@@ -59,12 +78,42 @@ FilterCondition = Annotated[
 ]
 
 
+class SuggestedValue(BaseModel):
+    value: str = Field(description="A distinct stored value of the field, exactly as stored.")
+    overlap: int = Field(
+        ge=1,
+        description="Query words of the condition that start a word or the acronym of `value`.",
+    )
+    row_count: int = Field(ge=1, description="Rows of the source holding exactly this value.")
+
+
+class ValueSuggestion(BaseModel):
+    """One `equals`/`contains` condition that matches no row of the source on its own."""
+
+    field: str
+    op: Literal["equals", "contains"]
+    value: str
+    candidates: list[SuggestedValue] = Field(
+        description=(
+            "At most `max_suggestions`. Ordered by `overlap` desc, `row_count` desc, `value` "
+            "asc (code point). **Empty** means 'no close values found'."
+        )
+    )
+
+
+def _is_none(value: object) -> bool:
+    return value is None
+
+
 class RowQueryResult(BaseModel):
     identifier: str
     rows: list[dict[str, str | None]]
     returned_count: int
     total_match_count: int
     truncated: bool
+    # Only on an empty result with text conditions (009 contracts/value-suggestions.md);
+    # absent from the serialized form otherwise, so other results serialize as before.
+    value_suggestions: list[ValueSuggestion] | None = Field(default=None, exclude_if=_is_none)
 
 
 AggregateFunction = Literal["count", "sum", "mean", "min", "max", "count_distinct"]
@@ -128,3 +177,5 @@ class AggregationResult(BaseModel):
     groups: list[AggregationGroup]
     total_group_count: int
     truncated: bool
+    # Same rule as RowQueryResult.value_suggestions.
+    value_suggestions: list[ValueSuggestion] | None = Field(default=None, exclude_if=_is_none)

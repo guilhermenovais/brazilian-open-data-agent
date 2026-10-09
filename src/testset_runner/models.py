@@ -5,6 +5,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field
 
+from data_access.text_matching import TextMatchingConfig
 from qa_agent.models import FailureDetail, Outcome, RetrievalStep
 
 MatchStatus = Literal["matched", "not_matched", "needs_review", "errored"]
@@ -47,10 +48,10 @@ class TargetConfiguration(BaseModel):
 class RetryPolicy(BaseModel):
     """The retry rules for one run, persisted on `TestRun` (006 data-model.md).
 
-    An attempt is one `QuestionAnswerer.answer()` call: a full, fresh answer to the
-    question. The provider SDK (e.g. openai, `DEFAULT_MAX_RETRIES = 2`) may retry
-    individual HTTP requests inside one attempt, so `attempts=1` does not mean exactly
-    one HTTP request (006 research.md §2).
+    An attempt is one `QuestionAnswerer.answer()` call (`answer_turn()` in a conversation
+    run): a full, fresh answer to the question. The provider SDK (e.g. openai,
+    `DEFAULT_MAX_RETRIES = 2`) may retry individual HTTP requests inside one attempt, so
+    `attempts=1` does not mean exactly one HTTP request (006 research.md §2).
 
     The wait before retry `k` (k = 1, 2, ...) is
     `min(max(initial_wait_seconds * backoff_multiplier ** (k - 1), retry_after or 0), max_wait_seconds)`,
@@ -121,6 +122,9 @@ class TestRun(BaseModel):
     briefing_fingerprints: list[str] | None = None
     """Sorted distinct fingerprints of the briefings used (normally one). `[]` if every
     question failed dataset selection. `None` means not recorded (the run predates 008)."""
+    text_matching: TextMatchingConfig | None = None
+    """The text-matching config the data tools used. `None` means a pre-009 run (not
+    recorded). Information only: `compare` never treats a difference as incompatible."""
 
 
 class ComparisonEntry(BaseModel):

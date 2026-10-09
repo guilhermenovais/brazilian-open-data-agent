@@ -22,4 +22,4 @@ def test_008_us4_3_invalid_prompt_version_rejected(monkeypatch) -> None:
         AgentSettings(model_name="m", prompt_version="v9")
     message = str(exc_info.value)
     assert "v9" in message
-    assert "v1, v2" in message
+    assert "v1, v2, v3" in message

@@ -1,0 +1,435 @@
+[
+  {
+    "id": "follow-up-year-01",
+    "category": "follow-up-year",
+    "description": "Muda só o ano. Esperado: soma de pago da AEB em 2011.",
+    "turns": [
+      {
+        "message": "Quanto foi pago pela Agência Espacial Brasileira em 2010?",
+        "expected": "112856283",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e em 2011?",
+        "expected": "108537469",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-year-02",
+    "category": "follow-up-year",
+    "description": "Muda só o ano de uma pergunta sobre empenho. Esperado: soma de empenhado da AEB em 2009.",
+    "turns": [
+      {
+        "message": "Qual foi o valor empenhado pela AEB em 2008?",
+        "expected": "198073216",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e em 2009?",
+        "expected": "287051265",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-year-03",
+    "category": "follow-up-year",
+    "description": "Total geral (todas as unidades), muda só o ano. Esperado: soma de pago em 2017.",
+    "turns": [
+      {
+        "message": "Quanto foi pago no total em 2016?",
+        "expected": "62026310",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e em 2017?",
+        "expected": "84271568",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-metric-01",
+    "category": "follow-up-metric",
+    "description": "Mantém AEB e 2012, troca pago por empenhado. Esperado: soma de empenhado da AEB em 2012.",
+    "turns": [
+      {
+        "message": "Quanto foi pago pela AEB em 2012?",
+        "expected": "135986119",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "278177450",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-metric-02",
+    "category": "follow-up-metric",
+    "description": "Mantém AEB e 2003, troca dotação por pago. Esperado: soma de pago da AEB em 2003.",
+    "turns": [
+      {
+        "message": "Qual foi a dotação atual total da AEB em 2003?",
+        "expected": "36184520",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e o valor pago?",
+        "expected": "19269970",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-metric-03",
+    "category": "follow-up-metric",
+    "description": "Mantém a ação Amazônia-1 em 2010, troca pago por dotação atual. Esperado: dotacao_atual dessa linha.",
+    "turns": [
+      {
+        "message": "Quanto foi pago pelo desenvolvimento do satélite Amazônia-1 em 2010?",
+        "expected": "16568950",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e qual foi a dotação atual?",
+        "expected": "40000000",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-reference-01",
+    "category": "follow-up-reference",
+    "description": "\"dessas\" = as 3 ações da AEB com maior pago em 2012. Esperado: menor empenhado entre elas.",
+    "turns": [
+      {
+        "message": "Quais foram as 3 ações da AEB com maior valor pago em 2012?",
+        "scored": false
+      },
+      {
+        "message": "Qual dessas teve o menor valor empenhado, e quanto foi?",
+        "expected": "25404101",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-reference-02",
+    "category": "follow-up-reference",
+    "description": "\"nessa mesma ação\" = CBERS-3. Esperado: pago da ação CBERS-3 em 2010.",
+    "turns": [
+      {
+        "message": "Quanto foi pago pelo desenvolvimento do satélite sino-brasileiro CBERS-3 em 2008?",
+        "expected": "40010834",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "E quanto foi pago nessa mesma ação em 2010?",
+        "expected": "40356409",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "follow-up-reference-03",
+    "category": "follow-up-reference",
+    "description": "\"esse programa\" = programa do MCTIC com maior pago em 2018 (Política Espacial). Esperado: soma de empenhado desse programa no MCTIC em 2018.",
+    "turns": [
+      {
+        "message": "Qual programa do Ministério da Ciência, Tecnologia, Inovações e Comunicações teve o maior valor pago em 2018?",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi empenhado nesse programa nesse mesmo ano?",
+        "expected": "145295061",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "standalone-after-unrelated-01",
+    "category": "standalone-after-unrelated",
+    "description": "A segunda pergunta é completa e não herda a AEB. Esperado: soma de empenhado (todas as unidades) em 2016.",
+    "turns": [
+      {
+        "message": "Quanto foi pago pela AEB em 2010?",
+        "expected": "112856283",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Qual foi o valor empenhado total em 2016?",
+        "expected": "130026337",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "standalone-after-unrelated-02",
+    "category": "standalone-after-unrelated",
+    "description": "A segunda pergunta é completa e não herda AEB nem 2012 nem o recorte de 3 ações. Esperado: soma de pago em 2019.",
+    "turns": [
+      {
+        "message": "Quais foram as 3 ações da AEB com maior valor pago em 2012?",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago no total em 2019?",
+        "expected": "100585421",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "clarification-01",
+    "category": "clarification",
+    "description": "Pergunta vaga, depois a resposta completa. Esperado: soma de pago da AEB em 2011.",
+    "turns": [
+      {
+        "message": "Me fale sobre o orçamento.",
+        "expected_outcome": "none",
+        "scored": false
+      },
+      {
+        "message": "o valor pago pela Agência Espacial Brasileira em 2011",
+        "expected": "108537469",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "clarification-02",
+    "category": "clarification",
+    "description": "Pergunta vaga sobre a AEB, depois a métrica e o ano. Esperado: soma de empenhado da AEB em 2013.",
+    "turns": [
+      {
+        "message": "Quero saber sobre os gastos da AEB.",
+        "scored": false
+      },
+      {
+        "message": "o total empenhado em 2013",
+        "expected": "286007643",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "clarification-03",
+    "category": "clarification",
+    "description": "\"valor do orçamento\" é ambíguo (dotação/empenhado/liquidado/pago; 004 testset n=10). A resposta escolhe a métrica. Esperado: soma de pago da AEB em 2005.",
+    "turns": [
+      {
+        "message": "Qual foi o valor do orçamento da Agência Espacial Brasileira em 2005?",
+        "scored": false
+      },
+      {
+        "message": "o valor pago",
+        "expected": "131995537",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "clarification-insufficient-01",
+    "category": "clarification-insufficient",
+    "description": "A resposta ao pedido de esclarecimento ainda não diz qual satélite, nem o ano, nem a métrica (há várias ações de satélite). Esperado: pedir de novo o que falta (outcome none).",
+    "turns": [
+      {
+        "message": "Quero saber quanto foi gasto em uma ação.",
+        "scored": false
+      },
+      {
+        "message": "aquela do satélite",
+        "expected_outcome": "none"
+      }
+    ]
+  },
+  {
+    "id": "clarification-ignored-01",
+    "category": "clarification-ignored",
+    "description": "Depois da pergunta vaga, o usuário faz outra pergunta completa. Esperado: soma de pago em 2014.",
+    "turns": [
+      {
+        "message": "Me fale sobre o orçamento.",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago no total em 2014?",
+        "expected": "99116480",
+        "source": "dados_gerais/tb_geral.csv"
+      }
+    ]
+  },
+  {
+    "id": "fresh-chat-follow-up-01",
+    "category": "fresh-chat-follow-up",
+    "description": "Sem conversa anterior, \"e em 2016?\" não tem assunto: deve ser recusada como vaga.",
+    "turns": [
+      {
+        "message": "e em 2016?",
+        "expected_outcome": "none"
+      }
+    ]
+  },
+  {
+    "id": "fresh-chat-follow-up-02",
+    "category": "fresh-chat-follow-up",
+    "description": "Sem conversa anterior, \"e o empenhado?\" não tem unidade nem ano: deve ser recusada como vaga.",
+    "turns": [
+      {
+        "message": "e o empenhado?",
+        "expected_outcome": "none"
+      }
+    ]
+  },
+  {
+    "id": "long-conversation-01",
+    "category": "long-conversation",
+    "description": "22 turnos alternando pago/empenhado por ano. Nenhum turno é pontuado: mede que nenhum turno falha (errored) e que, no limite padrão, history_turns_used == history_turns_sent.",
+    "turns": [
+      {
+        "message": "Quanto foi pago pela AEB em 2000?",
+        "expected": "14858825",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "18276474",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2001?",
+        "expected": "28171494",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "37375589",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2002?",
+        "expected": "18245931",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "23074408",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2003?",
+        "expected": "19269970",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "29139083",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2005?",
+        "expected": "131995537",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "205868524",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2007?",
+        "expected": "98745147",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "211266650",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2008?",
+        "expected": "90769389",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "198073216",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2009?",
+        "expected": "138642245",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "287051265",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2010?",
+        "expected": "112856283",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "268363147",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago pela AEB em 2011?",
+        "expected": "108537469",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "e quanto foi empenhado?",
+        "expected": "243172890",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago no total em 2014?",
+        "expected": "99116480",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      },
+      {
+        "message": "Quanto foi pago no total em 2015?",
+        "expected": "58078604",
+        "source": "dados_gerais/tb_geral.csv",
+        "scored": false
+      }
+    ]
+  }
+]

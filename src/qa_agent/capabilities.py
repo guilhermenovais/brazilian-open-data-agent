@@ -1,6 +1,7 @@
-"""answer_question: the one public entry point of qa_agent (contracts/answering.md).
+"""answer_question / answer_turn: the public entry points of qa_agent (contracts/answering.md,
+008 contracts/conversational-answering.md).
 
-Never raises DatasetSelector*/DataAccessError/pydantic_ai exceptions to its caller —
+Neither raises DatasetSelector*/DataAccessError/pydantic_ai exceptions to its caller —
 every reachable failure is caught here and translated into a QuestionAnsweringResult
 with a Portuguese answer and outcome="none" (research.md §10).
 
@@ -11,10 +12,19 @@ Portuguese answer texts themselves are unchanged.
 """
 
 from datetime import datetime, timezone
+from collections.abc import Sequence
 from typing import MutableSequence
 
 from pydantic import BaseModel
-from pydantic_ai.messages import ModelMessage, ToolCallPart, ToolReturnPart
+from pydantic_ai.messages import (
+    ModelMessage,
+    ModelRequest,
+    ModelResponse,
+    TextPart,
+    ToolCallPart,
+    ToolReturnPart,
+    UserPromptPart,
+)
 from pydantic_ai.models import Model
 
 from dataset_selector.capabilities import select_dataset
@@ -28,11 +38,13 @@ from dataset_selector.selector import DatasetSelector
 from dataset_selector.usage_log import SelectionLogger
 
 from qa_agent.agent_factory import build_agent
+from qa_agent.conversation import ConversationContext, ConversationTurn, fit_history
 from qa_agent.deps import AgentDeps
 from qa_agent.failures import describe_failure, never_transient
 from qa_agent.models import (
     AgentAnswer,
     AgentRunLogEntry,
+    ConversationLogContext,
     FailureDetail,
     Outcome,
     QuestionAnsweringResult,
@@ -47,6 +59,11 @@ from qa_agent.transient import classify
 _NO_DATASET_ANSWER = "Não foi possível determinar a base de dados para responder a esta pergunta."
 _PROCESSING_FAILED_ANSWER = "Não foi possível processar a pergunta no momento."
 _UNKNOWN_DATASET_KEY = "<none>"
+
+# The system prompt version every conversational turn uses (008 research.md R4). The single
+# source of truth: `answer_turn` passes it to `render` and records it in the run log, and the
+# conversation runner records the same value in each `ConversationRun`.
+CONVERSATION_PROMPT_VERSION = "v3"
 
 
 def answer_question(
@@ -73,6 +90,63 @@ def answer_question(
     return _answer_with_selection(question, selection, run_logger=run_logger, settings=settings)
 
 
+def answer_turn(
+    message: str,
+    *,
+    context: ConversationContext,
+    selector: DatasetSelector,
+    selection_logger: SelectionLogger,
+    run_logger: RunLogger,
+    settings: AgentSettings,
+) -> QuestionAnsweringResult:
+    """Answers one message of a conversation, using the earlier visible turns to interpret it.
+
+    A separate entry point beside `answer_question`, not a flag on it, so the standalone
+    path's model input stays byte-identical (008 FR-014, SC-007); both share
+    `_answer_with_selection`, so the grounding and failure rules cannot drift (FR-012).
+
+    Dataset selection runs on the current `message` alone, every turn, exactly as in
+    `answer_question`. The history is trimmed here, not by callers, with
+    `fit_history(context.history, settings.history_char_limit)`, so the web UI and the
+    conversation runner can never disagree on what the model sees (FR-011). Each turn
+    gets a fresh step budget (FR-009) and the `v3` prompt, and its single run log entry
+    carries a `conversation` block (FR-013). Same catch policy as `answer_question`.
+    """
+    kept = fit_history(context.history, settings.history_char_limit)
+    log_context = ConversationLogContext(
+        conversation_id=context.conversation_id,
+        turn_index=context.turn_index,
+        history_turns_used=len(kept),
+        history_turns_dropped=len(context.history) - len(kept),
+        history_char_limit=settings.history_char_limit,
+        prompt_version=CONVERSATION_PROMPT_VERSION,
+    )
+
+    try:
+        selection = select_dataset(message, selector, selection_logger)
+    except (NoBriefingsAvailableError, DatasetNotFoundError, BriefingNotFoundError) as exc:
+        return _finalize(
+            question=message,
+            dataset_key=_UNKNOWN_DATASET_KEY,
+            answer=_NO_DATASET_ANSWER,
+            outcome="none",
+            run_logger=run_logger,
+            errored=True,
+            failure=describe_failure(exc, secrets=[settings.api_key], classify=never_transient),
+            log_context=log_context,
+        )
+
+    return _answer_with_selection(
+        message,
+        selection,
+        run_logger=run_logger,
+        settings=settings,
+        history=kept,
+        prompt_version=CONVERSATION_PROMPT_VERSION,
+        log_context=log_context,
+    )
+
+
 def _answer_with_selection(
     question: str,
     selection: DatasetSelectionResult,
@@ -81,8 +155,18 @@ def _answer_with_selection(
     settings: AgentSettings,
     model_override: Model | str | None = None,
     capture_deps: MutableSequence[AgentDeps] | None = None,
+    history: Sequence[ConversationTurn] = (),
+    prompt_version: str | None = None,
+    log_context: ConversationLogContext | None = None,
 ) -> QuestionAnsweringResult:
     """Runs the agent for an already-resolved dataset selection and logs the result.
+
+    The shared core of `answer_question` and `answer_turn`, so the no-fabrication,
+    failure-translation and outcome-clamp rules cannot drift between the two paths (008
+    FR-012). `history` (already trimmed by the caller) is sent as prior text-only
+    messages, `prompt_version` overrides `settings.prompt_version` and `log_context` is
+    recorded on the run log entry. Their defaults reproduce the standalone call exactly: no
+    message history, the configured prompt version and `conversation=None`.
 
     Split out of `answer_question` so contract tests can inject a scripted
     `pydantic_ai` test-double model (`model_override`) without a live model call —
@@ -97,16 +181,22 @@ def _answer_with_selection(
         dataset=selection.dataset,
         dataset_key=selection.dataset_key,
         step_budget=step_budget,
+        text_matching=settings.text_matching,
     )
     if capture_deps is not None:
         capture_deps.append(deps)
     agent = build_agent(settings)
-    system_prompt = render(selection.briefing, settings.prompt_version)
+    system_prompt = render(selection.briefing, prompt_version or settings.prompt_version)
     briefing_fingerprint = fingerprint(selection.briefing)
+    message_history = _history_messages(history)
 
     try:
         run_result = agent.run_sync(
-            question, deps=deps, instructions=system_prompt, model=model_override
+            question,
+            deps=deps,
+            instructions=system_prompt,
+            model=model_override,
+            message_history=message_history or None,
         )
     except Exception as exc:
         return _finalize(
@@ -118,11 +208,14 @@ def _answer_with_selection(
             errored=True,
             failure=describe_failure(exc, secrets=[settings.api_key], classify=classify),
             briefing_fingerprint=briefing_fingerprint,
+            log_context=log_context,
         )
 
     agent_answer: AgentAnswer = run_result.output
     outcome = _clamp_outcome(reported=agent_answer.outcome, budget=step_budget)
-    steps = _extract_steps(run_result.all_messages())
+    # `new_messages()` excludes the history, so `steps` are current-turn only (research.md
+    # R2). On the standalone path it equals `all_messages()`.
+    steps = _extract_steps(run_result.new_messages())
 
     return _finalize(
         question=question,
@@ -132,7 +225,20 @@ def _answer_with_selection(
         run_logger=run_logger,
         steps=steps,
         briefing_fingerprint=briefing_fingerprint,
+        log_context=log_context,
     )
+
+
+def _history_messages(history: Sequence[ConversationTurn]) -> list[ModelMessage]:
+    """Earlier turns as prior model messages: the user's text, then the reply's text if
+    there was one. No other part type is ever built, so no tool call or result from an
+    earlier turn reaches the model (008 FR-001)."""
+    messages: list[ModelMessage] = []
+    for turn in history:
+        messages.append(ModelRequest(parts=[UserPromptPart(turn.question)]))
+        if turn.answer is not None:
+            messages.append(ModelResponse(parts=[TextPart(turn.answer)]))
+    return messages
 
 
 def _extract_steps(messages: list[ModelMessage]) -> list[RetrievalStep]:
@@ -198,6 +304,7 @@ def _finalize(
     errored: bool = False,
     failure: FailureDetail | None = None,
     briefing_fingerprint: str | None = None,
+    log_context: ConversationLogContext | None = None,
 ) -> QuestionAnsweringResult:
     run_logger.log(
         AgentRunLogEntry(
@@ -206,6 +313,7 @@ def _finalize(
             outcome=outcome,
             timestamp=datetime.now(timezone.utc),
             failure=failure,
+            conversation=log_context,
         )
     )
     return QuestionAnsweringResult(

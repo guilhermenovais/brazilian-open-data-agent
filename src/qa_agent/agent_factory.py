@@ -1,4 +1,4 @@
-"""build_agent: constructs a fresh Agent per answer_question call (Eng. Principle 4 —
+"""build_agent: constructs a fresh Agent per answer_question/answer_turn call (Eng. Principle 4 —
 no module-level global agent instance).
 
 The system prompt is rendered by `capabilities.answer_question` (using that

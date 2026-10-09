@@ -18,11 +18,14 @@ def _run(monkeypatch, argv: list[str]) -> tuple[int, list[str]]:
     """
     captured: dict[str, object] = {}
 
-    def fake_answerer(model_name, base_url=None, *, api_key=None, prompt_version=None):
+    def fake_answerer(
+        model_name, base_url=None, *, api_key=None, prompt_version=None, history_char_limit=None
+    ):
         captured["model_name"] = model_name
         captured["base_url"] = base_url
         captured["api_key"] = api_key
         captured["prompt_version"] = prompt_version
+        captured["history_char_limit"] = history_char_limit
         return object()
 
     def fake_create_app(answerer, host):
@@ -130,7 +133,9 @@ def test_port_in_use_prints_a_clear_error_and_exits_1(monkeypatch, capsys) -> No
     monkeypatch.delenv("QA_WEB_HOST", raising=False)
     monkeypatch.delenv("QA_WEB_PORT", raising=False)
 
-    def fake_answerer(model_name, base_url=None, *, api_key=None, prompt_version=None):
+    def fake_answerer(
+        model_name, base_url=None, *, api_key=None, prompt_version=None, history_char_limit=None
+    ):
         return object()
 
     def fake_create_app(answerer, host):
@@ -236,4 +241,55 @@ def test_008_us4_3_web_ui_unknown_version_fails_fast(monkeypatch, capsys) -> Non
         main()
 
     assert exc_info.value.code == 1
-    assert "Error: unknown prompt version 'v9' (available: v1, v2)." in capsys.readouterr().err
+    assert "Error: unknown prompt version 'v9' (available: v1, v2, v3)." in capsys.readouterr().err
+
+
+# --- 008: --history-char-limit -------------------------------------------------------
+
+
+def test_history_char_limit_defaults_to_16000_and_is_printed(monkeypatch, capsys) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+    monkeypatch.delenv("QA_WEB_HOST", raising=False)
+    monkeypatch.delenv("QA_WEB_PORT", raising=False)
+
+    exit_code, captured = _run(monkeypatch, [])
+
+    assert exit_code == 0
+    assert captured["history_char_limit"] == 16000
+    lines = capsys.readouterr().out.splitlines()
+    url_line = lines.index("Chat UI available at: http://127.0.0.1:8000")
+    assert lines[url_line + 1] == "Conversation history limit: 16000 characters"
+
+
+def test_history_char_limit_flag_wins_over_env(monkeypatch) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.setenv("QA_AGENT_HISTORY_CHAR_LIMIT", "500")
+
+    _, captured = _run(monkeypatch, ["--history-char-limit", "0"])
+
+    assert captured["history_char_limit"] == 0
+
+
+def test_history_char_limit_falls_back_to_env(monkeypatch) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.setenv("QA_AGENT_HISTORY_CHAR_LIMIT", "500")
+
+    _, captured = _run(monkeypatch, [])
+
+    assert captured["history_char_limit"] == 500
+
+
+@pytest.mark.parametrize("argv,env", [(["--history-char-limit=-1"], None), (["--history-char-limit", "abc"], None), ([], "-5")])
+def test_invalid_history_char_limit_exits_1(monkeypatch, capsys, argv, env) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    if env is None:
+        monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+    else:
+        monkeypatch.setenv("QA_AGENT_HISTORY_CHAR_LIMIT", env)
+
+    exit_code, captured = _run(monkeypatch, argv)
+
+    assert exit_code == 1
+    assert "model_name" not in captured
+    assert "Error: --history-char-limit must be an integer >= 0." in capsys.readouterr().err

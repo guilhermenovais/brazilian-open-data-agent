@@ -3,11 +3,16 @@
 Each prompt version is a named file, `prompts/system_<version>.md` (e.g. `system_v1.md`,
 `system_v2.md`), diffable and versioned (Eng. Principle 8) — never edited in place: a
 behavior change is a new file. Versions are discovered from the files themselves, so
-adding `system_v3.md` needs no code change.
+adding `system_v4.md` needs no code change.
 
 `fingerprint` identifies a briefing's content: each answer carries the SHA-256 of the
 briefing it used, so a run can always be tied to the exact briefing text, even though the
 briefing file is edited in place (008 research §3, §5).
+
+`v2` (the default) is the standalone `answer_question` path's prompt, with the
+needs_clarification rule. `v3` is the conversational `answer_turn` path's prompt: v1's rules
+plus the rules on how earlier turns may and may not be used (008-chat-conversation-history
+research.md R4, where it was named `v2`).
 """
 
 import hashlib

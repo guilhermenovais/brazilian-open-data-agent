@@ -40,7 +40,9 @@ def test_run_subcommand_accepts_explicit_flags_without_env_vars(monkeypatch, tmp
 
     captured: dict[str, object] = {}
 
-    def fake_run_testset(testset_path, target, *, answerer, store, matcher=None, retry_policy=None):
+    def fake_run_testset(
+        testset_path, target, *, answerer, store, matcher=None, retry_policy=None, text_matching=None
+    ):
         captured["testset_path"] = testset_path
         captured["target"] = target
         return _fake_run(target)
@@ -83,7 +85,9 @@ def test_run_subcommand_falls_back_to_env_vars_when_flags_are_omitted(
 
     captured: dict[str, object] = {}
 
-    def fake_run_testset(testset_path, target, *, answerer, store, matcher=None, retry_policy=None):
+    def fake_run_testset(
+        testset_path, target, *, answerer, store, matcher=None, retry_policy=None, text_matching=None
+    ):
         captured["target"] = target
         return _fake_run(target)
 
@@ -216,9 +220,14 @@ def _invoke_run(monkeypatch, tmp_path: Path, extra: list[str]) -> tuple[int, dic
         monkeypatch.delenv(var, raising=False)
     captured: dict[str, object] = {}
 
-    def fake_run_testset(testset_path, target, *, answerer, store, matcher=None, retry_policy=None):
+    def fake_run_testset(
+        testset_path, target, *, answerer, store, matcher=None, retry_policy=None, text_matching=None
+    ):
         captured["retry_policy"] = retry_policy
-        return _fake_run(target).model_copy(update={"retry_policy": retry_policy})
+        captured["text_matching"] = text_matching
+        return _fake_run(target).model_copy(
+            update={"retry_policy": retry_policy, "text_matching": text_matching}
+        )
 
     monkeypatch.setattr(cli_module, "run_testset", fake_run_testset)
     args = build_parser().parse_args(
@@ -346,7 +355,7 @@ def test_008_us4_3_unknown_version_fails_fast(monkeypatch, tmp_path: Path, capsy
 
     assert exit_code == 1
     assert (
-        "Error: unknown prompt version 'v9' (available: v1, v2)." in capsys.readouterr().err
+        "Error: unknown prompt version 'v9' (available: v1, v2, v3)." in capsys.readouterr().err
     )
     assert captured == {}
     assert not out_dir.exists() or not any(out_dir.iterdir())
@@ -408,3 +417,201 @@ def test_008_compare_prints_versions_and_fingerprints(monkeypatch, capsys) -> No
     assert lines[3] == "Run B: model=b base_url=None prompt_version=v2"
     assert lines[5] == f"  briefing fingerprint: {'b' * 12}"
     assert lines[6] == "Briefing fingerprints differ: yes"
+
+
+# --- 008: run-conversations -----------------------------------------------------------
+
+
+def _fake_conversation_run(target, *, history_char_limit, retry_policy, summary=None):
+    from testset_runner.conversation_models import (
+        ConversationRun,
+        ConversationRunSummary,
+        ConversationTestset,
+    )
+
+    return ConversationRun(
+        run_id="20260925T120000000000Z",
+        created_at=datetime.now(timezone.utc),
+        testset=ConversationTestset(path="c.json", content_hash="abc", conversations=[]),
+        target=target,
+        retry_policy=retry_policy,
+        history_char_limit=history_char_limit,
+        prompt_version="v3",
+        results=[],
+        summary=summary
+        or ConversationRunSummary(
+            total_conversations=0,
+            total_turns=0,
+            scored_turns=0,
+            match_rate=0.0,
+            by_status={},
+            by_category={},
+            turns_with_ungrounded_figures=0,
+            target_unreachable=False,
+        ),
+    )
+
+
+def _invoke_conversations(monkeypatch, tmp_path: Path, extra: list[str], summary=None) -> tuple[int, dict]:
+    for var in ("QA_AGENT_BASE_URL", "QA_AGENT_API_KEY", "QA_AGENT_MAX_ATTEMPTS"):
+        monkeypatch.delenv(var, raising=False)
+    captured: dict[str, object] = {}
+
+    def fake_run_conversations(
+        testset_path, target, *, answerer, store, history_char_limit, retry_policy, **kwargs
+    ):
+        captured.update(
+            testset_path=testset_path,
+            target=target,
+            answerer=answerer,
+            history_char_limit=history_char_limit,
+            retry_policy=retry_policy,
+        )
+        return _fake_conversation_run(
+            target, history_char_limit=history_char_limit, retry_policy=retry_policy, summary=summary
+        )
+
+    monkeypatch.setattr(cli_module, "run_conversations", fake_run_conversations)
+    args = build_parser().parse_args(
+        ["run-conversations", "--testset", "c.json", "--out-dir", str(tmp_path), *extra]
+    )
+    return args.func(args), captured
+
+
+def test_run_conversations_accepts_every_flag(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.delenv("QA_AGENT_MODEL", raising=False)
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+
+    exit_code, captured = _invoke_conversations(
+        monkeypatch,
+        tmp_path,
+        [
+            "--model", "m",
+            "--base-url", "http://localhost:8000/v1",
+            "--api-key", "EMPTY",
+            "--max-attempts", "2",
+            "--history-char-limit", "500",
+        ],
+    )
+
+    assert exit_code == 0
+    assert captured["testset_path"] == "c.json"
+    assert captured["target"] == TargetConfiguration(model_name="m", base_url="http://localhost:8000/v1")
+    assert captured["retry_policy"] == RetryPolicy(max_attempts=2)
+    assert captured["history_char_limit"] == 500
+    assert captured["answerer"].history_char_limit == 500  # type: ignore[attr-defined]
+
+
+def test_run_conversations_history_limit_defaults_and_env_fallback(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+    _, captured = _invoke_conversations(monkeypatch, tmp_path, [])
+    assert captured["history_char_limit"] == 16000
+
+    monkeypatch.setenv("QA_AGENT_HISTORY_CHAR_LIMIT", "700")
+    _, captured = _invoke_conversations(monkeypatch, tmp_path, [])
+    assert captured["history_char_limit"] == 700
+
+
+@pytest.mark.parametrize("value", ["-1", "abc", "1.5"])
+def test_run_conversations_rejects_an_invalid_history_limit(
+    monkeypatch, tmp_path: Path, capsys, value: str
+) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+
+    exit_code, captured = _invoke_conversations(monkeypatch, tmp_path, [f"--history-char-limit={value}"])
+
+    assert exit_code == 1
+    assert captured == {}
+    assert "Error: --history-char-limit must be an integer >= 0." in capsys.readouterr().err
+
+
+def test_run_conversations_requires_a_model(monkeypatch, tmp_path: Path, capsys) -> None:
+    monkeypatch.delenv("QA_AGENT_MODEL", raising=False)
+    exit_code, captured = _invoke_conversations(monkeypatch, tmp_path, [])
+    assert exit_code == 1
+    assert captured == {}
+    assert "Error: --model is required (or set QA_AGENT_MODEL)." in capsys.readouterr().err
+
+
+def test_run_conversations_report(monkeypatch, tmp_path: Path, capsys) -> None:
+    from testset_runner.conversation_models import ConversationRunSummary
+
+    def cat(rate: float, scored: int) -> ConversationRunSummary:
+        return ConversationRunSummary(
+            total_conversations=1, total_turns=2, scored_turns=scored, match_rate=rate,
+            by_status={}, by_category={}, turns_with_ungrounded_figures=0, target_unreachable=False,
+        )
+
+    summary = ConversationRunSummary(
+        total_conversations=4,
+        total_turns=9,
+        scored_turns=6,
+        match_rate=5 / 6,
+        by_status={},
+        by_category={"follow-up-year": cat(1.0, 3), "clarification": cat(2 / 3, 3)},
+        turns_with_ungrounded_figures=2,
+        target_unreachable=True,
+    )
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    monkeypatch.delenv("QA_AGENT_HISTORY_CHAR_LIMIT", raising=False)
+
+    _invoke_conversations(monkeypatch, tmp_path, [], summary=summary)
+
+    lines = capsys.readouterr().out.splitlines()
+    assert lines == [
+        "Run 20260925T120000000000Z: 4 conversations, 9 turns (6 scored)",
+        "WARNING: the target model/URL appears unreachable for the whole run — "
+        "the match rate below is not meaningful.",
+        "Match rate (scored turns): 83.3%",
+        "By category:",
+        "  clarification: 66.7% (3 scored turns)",
+        "  follow-up-year: 100.0% (3 scored turns)",
+        "Turns with ungrounded figures: 2",
+        "Retry policy: max_attempts=3, waits 2.0s x2.0 (cap 60.0s)",
+        "Text matching: not recorded",
+        "History limit: 16000 characters; prompt: v3",
+        f"Saved run to {str(tmp_path).rstrip('/')}/20260925T120000000000Z.json",
+    ]
+
+
+# --- 009: text matching passed to the run and reported --------------------------------
+
+
+def test_009_run_records_and_prints_the_answerers_text_matching(
+    monkeypatch, tmp_path: Path, capsys
+) -> None:
+    from data_access.text_matching import TextMatchingConfig
+
+    _, captured = _invoke_run(monkeypatch, tmp_path, [])
+
+    assert captured["text_matching"] == TextMatchingConfig()
+    lines = capsys.readouterr().out.splitlines()
+    retry = next(i for i, line in enumerate(lines) if line.startswith("Retry policy:"))
+    assert lines[retry + 1] == (
+        "Text matching: value_list_threshold=30, max_suggestions=5, stopwords=pt_v1"
+    )
+
+
+def test_009_run_conversations_passes_the_answerers_text_matching(
+    monkeypatch, tmp_path: Path
+) -> None:
+    monkeypatch.setenv("QA_AGENT_MODEL", "m")
+    captured_kwargs: dict[str, object] = {}
+
+    def fake_run_conversations(testset_path, target, *, answerer, store, **kwargs):
+        captured_kwargs.update(kwargs, answerer=answerer)
+        return _fake_conversation_run(
+            target,
+            history_char_limit=kwargs["history_char_limit"],
+            retry_policy=kwargs["retry_policy"],
+        )
+
+    monkeypatch.setattr(cli_module, "run_conversations", fake_run_conversations)
+    args = build_parser().parse_args(
+        ["run-conversations", "--testset", "c.json", "--out-dir", str(tmp_path)]
+    )
+
+    assert args.func(args) == 0
+    answerer = captured_kwargs["answerer"]
+    assert captured_kwargs["text_matching"] is answerer.text_matching  # type: ignore[attr-defined]
